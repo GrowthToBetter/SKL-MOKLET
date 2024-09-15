@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(uuid()) @map("user_id") @db.Char(36)
+  email         String        @unique
+  photo_profile String?
+  name          String
+  clasess       String?
+  absent        String?
+  Phone         String?
+  NIS           String?
+  NISN          String?
+  schoolOrigin  String?
+  role          Role          @default(SISWA)
+  biography     String?
+  linkedin      String?
+  github        String?
+  instagram     String?
+  website       String?
+  whatsapp      String?
+  BirthDate     String?
+  religion      Religion?     @default(Islam)
+  gender        Gender?       @default(Male)
+  userAuth      UserAuth?
+}
+
+model UserAuth {
+  id         String    @id @default(uuid()) @map("userauth_id") @db.Char(36)
+  password   String?
+  last_login DateTime?
+  userEmail  String    @unique
+  user       User      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+}
+
+model ConditionToPast{
+  id          String          @id @default(uuid()) @map("condition_id") @db.Char(36)
+  condition   String?
+  userAuth    Checklist       @default(FALSE)     
+  teacherAuth Checklist       @default(FALSE)
+  status      RequestStatus   @default(PENDING)
+}
+
+enum Checklist { 
+  TRUE
+  FALSE
+}
+
+enum Role {
+  SISWA
+  GURU
+  ADMIN
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+enum Religion {
+  Islam
+  Kristen_Protestan
+  Kristen_Katolik
+  Budha
+  Hindu
+  Konghucu
+}
+
+enum RequestStatus {
+  PENDING
+  VERIFIED
+  DENIED
+}
