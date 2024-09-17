@@ -15,7 +15,7 @@ const config: Config = {
       },
       colors: {
         'moklet': "#B7292E",
-        "highlight":"#e0331f",
+        "highlight":"#F45846",
         "secondary":"#88898852",
       },
     },

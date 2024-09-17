@@ -63,7 +63,7 @@ export default function Navbar() {
                         />
                       </FormButton>
                       {prof && (
-                        <div className="w-full p-2 max-w-56 bg-white mt-1 border border-slate-300 rounded-lg fixed right-12 top-24 inline-block">
+                        <div className="w-full p-2 max-w-56 bg-moklet mt-1 border border-slate-300 rounded-lg fixed right-12 top-24 inline-block">
                           <LinkButton
                             variant="base"
                             href="/profile"
@@ -88,7 +88,7 @@ export default function Navbar() {
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
-              className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400"
+              className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-highlight focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400"
               aria-controls="navbar-sticky"
               aria-expanded="false"
               onClick={handleClick}
@@ -157,15 +157,15 @@ export default function Navbar() {
           </div>
           <div
             className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
-            // id="navbar-sticky"
+            id="navbar-sticky"
           >
             <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 opacity-80">
               <li>
                 <Link
                   href="/"
                   className={`${
-                    pathName === "/" ? "text-gray-400" : "text-white"
-                  } rounded md:bg-transparent hover:text-slate-300 duration-500`}
+                    pathName === "/" ? "text-highlight" : "text-white"
+                  } rounded md:bg-transparent hover:text-highlight duration-500`}
                 >
                   Home
                 </Link>
@@ -174,8 +174,8 @@ export default function Navbar() {
                 <Link
                   href="/partner"
                   className={`${
-                    pathName === "/partner" ? "text-gray-400" : "text-white"
-                  } rounded md:hover:bg-transparent hover:text-slate-300 duration-500`}
+                    pathName === "/partner" ? "text-highlight" : "text-white"
+                  } rounded md:hover:bg-transparent hover:text-highlight duration-500`}
                 >
                   Checklist
                 </Link>
@@ -184,8 +184,8 @@ export default function Navbar() {
                 <Link
                   href="/pengembang"
                   className={`${
-                    pathName === "/pengembang" ? "text-gray-400" : "text-white"
-                  } rounded md:hover:bg-transparent hover:text-slate-300 duration-500`}
+                    pathName === "/pengembang" ? "text-highlight" : "text-white"
+                  } rounded md:hover:bg-transparent hover:text-highlight duration-500`}
                 >
                   Developers
                 </Link>
