@@ -25,10 +25,9 @@ model User {
   religion      Religion?     @default(Islam)
   gender        Gender?       @default(Male)
   userAuth      UserAuth?
-  teacherId     String?
   TaskUser      Task[]     
   Sugestion     String?
-  Teacher       User?     @relation("teacherToStudent", fields: [teacherId], references: [id])
+  Teacher       User[]     @relation("teacherToStudent")
   Student User[] @relation("teacherToStudent")
 }
 

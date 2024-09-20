@@ -13,7 +13,6 @@ import { teacherFullPayload, userFullPayload } from "@/utils/relationsip";
 export default function User(props: any) {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<userFullPayload | null>(null);
-  const [teacherData, setTeacherData] = useState<teacherFullPayload | null>(null);
   useEffect(() => {
     const fetchUserData = async () => {
       if (session) {
@@ -59,7 +58,7 @@ export default function User(props: any) {
             Evaluasi Kompetensi
           </h1>
           <div className="bg-white border-2 border-highlight rounded-md p-5">
-           {userData ? <Hero userData={userData}/> : <h1 className="text-moklet"> Loading...</h1>} 
+            {userData? userData.Teacher.map((id, i)=>(<Hero userData={id} key={i}/>)) :  <h1 className="text-moklet"> Loading...</h1>}
           </div>
         </div>
       </div>
