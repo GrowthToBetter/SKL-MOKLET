@@ -8,6 +8,10 @@ import { compareSync } from "bcrypt";
 import { createUser, findUser, updateUser } from "@/utils/user.query";
 import { revalidatePath } from "next/cache";
 
+
+
+
+
 declare module "next-auth" {
   interface Session {
     user?: {
@@ -100,9 +104,6 @@ export const authOptions: AuthOptions = {
             return true;
           }
         }
-        // if (account?.provider === "google" && !profile?.email?.endsWith("smktelkom-mlg.sch.id")) {
-        //   return false;
-        // }
 
         if (user.email) {
           const userDatabase = await findUser({ email: user.email });
@@ -165,5 +166,4 @@ export const authOptions: AuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
-
 export const nextGetServerSession = () => getServerSession(authOptions);

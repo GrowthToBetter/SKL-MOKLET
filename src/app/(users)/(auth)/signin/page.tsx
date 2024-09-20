@@ -6,9 +6,11 @@ import { signIn, useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 import { fetcher } from "@/utils/server-action/Fetcher";
+import { userFullPayload, userWithLastLogin } from "@/utils/relationsip";
 
 export default function Signin() {
   const router = useRouter();
+  const [userData, setUserData] = useState<userWithLastLogin | null>(null);
   const { data: session, status } = useSession();
   const [loading, setIsLoading] = useState(false);
 
@@ -16,7 +18,27 @@ export default function Signin() {
     refreshInterval: 1000,
   });
 
+  useEffect(() => {
+    if (data) {
+      setUserData(data.user);
+    }
+  }, [data]);
+  
 
+  useEffect(() => {
+    if (session && userData) {
+      setIsLoading(true);
+      if (userData) {
+        toast.success("Berhasil Login!");
+        router.push("/profile");
+        setIsLoading(false);
+      } else {
+        toast.error("Maaf Login Gagal");
+        setIsLoading(false);
+      }
+    }
+  }, [session, userData, router]);
+  
   const handleLogin = async () => {
     setIsLoading(true);
     await signIn("google");
@@ -55,7 +77,7 @@ export default function Signin() {
                 <button
                   onClick={handleLogin}
                   type="button"
-                  className="focus:outline-none text-white bg-base flex justify-center items-center hover:bg-red-600 focus:ring focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 mt-6 w-full"
+                  className="focus:outline-none text-moklet bg-base border-2 border-moklet flex justify-center items-center hover:bg-red-600 hover:text-white focus:ring focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 mt-6 w-full"
                 >
                   {/* google */}
                   <p className="font-medium ">Continue with Google</p>

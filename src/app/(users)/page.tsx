@@ -1,16 +1,17 @@
-"use client";
+import prisma from "../../lib/prisma";
+import { CheckCondition, findAllUsers } from "@/utils/user.query";
+import Hero from "./Components/Hero/page";
+import { Prisma } from "@prisma/client";
+import { nextGetServerSession } from "@/lib/authOption";
+export default async function Home() {
+  const session = await nextGetServerSession();
+  const datas = await findAllUsers({
+    role:"GURU"
+  });
 
-import { useSession } from "next-auth/react";
-
-export default function Home() {
-  const { data: session, status } = useSession();
   return (
     <>
-    <div className="mt-[100px] p-5 max-w-max m-10">
-      <h1 className="font-semibold text-xl text-highlight">Hello, {session?.user?.name}</h1>
-      <div className="bg-moklet w-full rounded-xl ">
-      </div>
-    </div>
+      <Hero datas={datas} />
     </>
   );
 }

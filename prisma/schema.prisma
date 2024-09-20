@@ -22,6 +22,7 @@ model User {
   biography     String?
   linkedin      String?
   github        String?
+  status        Status  @default(NOTGRADUATE)
   instagram     String?
   website       String?
   whatsapp      String?
@@ -29,6 +30,11 @@ model User {
   religion      Religion?     @default(Islam)
   gender        Gender?       @default(Male)
   userAuth      UserAuth?
+  teacherId     String?
+  taskId        String?
+  TaskUser      Task?     @relation("TaskUser",fields: [taskId], references: [id])
+  Teacher       User?     @relation("teacherToStudent", fields: [teacherId], references: [id])
+  Student User[] @relation("teacherToStudent")
 }
 
 model UserAuth {
@@ -39,17 +45,20 @@ model UserAuth {
   user       User      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
 }
 
-model ConditionToPast{
-  id          String          @id @default(uuid()) @map("condition_id") @db.Char(36)
-  condition   String?
-  userAuth    Checklist       @default(FALSE)     
-  teacherAuth Checklist       @default(FALSE)
+model Task{
+  id          String          @id @default(uuid()) @map("task_id") @db.Char(36)
+  Task  String?
+  UserId String 
+  user User[] @relation("TaskUser")
+  userAuthTask    Boolean       @default(false)     
+  teacherAuth Boolean       @default(false)
   status      RequestStatus   @default(PENDING)
+
 }
 
-enum Checklist { 
-  TRUE
-  FALSE
+enum Status {
+  NOTGRADUATE
+  GRADUATE
 }
 
 enum Role {

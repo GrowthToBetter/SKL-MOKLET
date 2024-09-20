@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Task, Prisma } from "@prisma/client";
 import prisma from "./../lib/prisma";
 
 export const findAllUsers = async (filter?: Prisma.UserWhereInput) => {
@@ -33,4 +33,9 @@ export const updateUserAuth = async (where: Prisma.UserAuthWhereUniqueInput, upd
 
 export const deleteUser = async (user_id: string) => {
   return await prisma.user.delete({ where: { id: user_id } });
+};
+export const CheckCondition = async (filter: Prisma.TaskWhereInput) => {
+  return await prisma.task.findMany({
+    where: filter,
+  })
 };
