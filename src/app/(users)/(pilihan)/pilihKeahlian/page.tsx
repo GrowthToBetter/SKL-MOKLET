@@ -8,9 +8,8 @@ import { FormButton } from "@/app/components/utils/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { UpdateUserById } from "@/utils/server-action/userGetServerSession";
-import { Job, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { occupation } from "@/types/occupation";
 import toast from "react-hot-toast";
 
 export default function PilihKeahlian() {
@@ -86,12 +85,6 @@ export default function PilihKeahlian() {
                 className="bg-slate-50 border border-slate-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-slate-200 focus:border-slate-400 block w-full p-2.5 outline-none placeholder:text-slate-300 placeholder:font-light placeholder:tracking-wide"
                 onChange={handleSelectChange}
               >
-                <option>Select Occupation</option>
-                {occupation.map((e, i) => (
-                  <option key={i} value={e.value}>
-                    {e.occupation}
-                  </option>
-                ))}
               </select>
               <FormButton disabled={isLoading} type="button" variant="base" onClick={handleSubmit} className="mt-6 w-full">
                 {!isLoading ? (

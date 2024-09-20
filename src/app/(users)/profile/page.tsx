@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { userFullPayload } from "@/utils/relationsip";
@@ -17,17 +17,12 @@ import { DropDown, TextArea, TextField } from "@/app/components/utils/Form";
 import toast from "react-hot-toast";
 import {
   UpdateGeneralProfileById,
-  UpdateUserById,
 } from "@/utils/server-action/userGetServerSession";
 
 
 export default function Profile() {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<userFullPayload | null>(null);
-  const [skills, setSkills] = useState<string[]>([]);
-  const [selectedOccupation, setSelectedOccupation] = useState<string | null>(
-    null
-  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addSkillModal, setAddSkillModal] = useState(false);
   const [addProjectModal, setAddProjectModal] = useState(false);
@@ -55,10 +50,6 @@ export default function Profile() {
     fetchUserData();
   }, [session]);
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = event.target.value;
-    setSelectedOccupation(selectedValue);
-  };
 
   const handleModal = () => {
     setModal(!modal);
@@ -105,7 +96,7 @@ export default function Profile() {
           </div>
           <div className="mt-4 flex w-full justify-between">
             <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal">
-              {userData?.name}{" "}
+              {userData?.name}
               {
                 `${
                   userData?.clasess ? `(${userData?.clasess})` : "Loading..."

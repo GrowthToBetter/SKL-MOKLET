@@ -23,27 +23,10 @@ export const UpdateUserById = async (data: FormData) => {
     const NIS = data.get("NIS") as string;
     const NISN = data.get("NISN") as string;
     const schoolOrigin = data.get("schoolOrigin") as string;
-    const biography = data.get("biography") as string;
     const status = data.get("status") as Status;
-    const linkedin = data.get("linkedin") as string;
-    const github = data.get("github") as string;
-    const instagram = data.get("instagram") as string;
-    const website = data.get("website") as string;
-    const whatsapp = data.get("whatsapp") as string;
     const BirthDate = data.get("BirthDate") as string;
     const religion = data.get("religion") as Religion;
     const gender = data.get("gender") as Gender;
-    const certificates = JSON.parse(
-      (data.get("certificates") as string) || "[]"
-    ) as { CertificateName: string; img: string; link: string }[];
-    const projects = JSON.parse((data.get("projects") as string) || "[]") as {
-      ProjeectName: string;
-      link: string;
-    }[];
-    const Skills = JSON.parse(
-      (data.get("Skills") as string) || "[]"
-    ) as string[];
-
     if (!id) {
       const create = await createUser({
         email,
@@ -56,13 +39,7 @@ export const UpdateUserById = async (data: FormData) => {
         NISN,
         Phone,
         schoolOrigin,
-        biography,
         status,
-        linkedin,
-        github,
-        instagram,
-        website,
-        whatsapp,
         BirthDate,
         religion,
         gender,
@@ -84,13 +61,7 @@ export const UpdateUserById = async (data: FormData) => {
           NISN: NISN ?? findUserWithId?.NISN,
           schoolOrigin: schoolOrigin ?? findUserWithId?.schoolOrigin,
           Phone: Phone ?? findUserWithId?.Phone,
-          biography: biography ?? findUserWithId?.biography,
           BirthDate: BirthDate ?? findUserWithId?.BirthDate,
-          linkedin: linkedin ?? findUserWithId?.linkedin,
-          github: github ?? findUserWithId?.github,
-          instagram: instagram ?? findUserWithId?.instagram,
-          website: website ?? findUserWithId?.website,
-          whatsapp: whatsapp ?? findUserWithId?.whatsapp,
           gender: gender ?? findUserWithId?.gender,
           role: role ?? findUserWithId?.role,
           status: status ?? findUserWithId?.status,
@@ -147,13 +118,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
     const NIS = data.get("NIS") as string;
     const NISN = data.get("NISN") as string;
     const schoolOrigin = data.get("schoolOrigin") as string;
-    const biography = data.get("biography") as string;
     const status = data.get("status") as Status;
-    const linkedin = data.get("linkedin") as string;
-    const github = data.get("github") as string;
-    const instagram = data.get("instagram") as string;
-    const website = data.get("website") as string;
-    const whatsapp = data.get("whatsapp") as string;
     const BirthDate = data.get("BirthDate") as string;
     const religion = data.get("religion") as Religion;
     const gender = data.get("gender") as Gender;
@@ -170,13 +135,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
         NISN,
         Phone,
         schoolOrigin,
-        biography,
         status,
-        linkedin,
-        github,
-        instagram,
-        website,
-        whatsapp,
         BirthDate,
         religion,
         gender,
@@ -198,14 +157,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
           NISN: NISN ?? findUserWithId?.NISN,
           schoolOrigin: schoolOrigin ?? findUserWithId?.schoolOrigin,
           Phone: Phone ?? findUserWithId?.Phone,
-          biography: biography ?? findUserWithId?.biography,
           BirthDate: BirthDate ?? findUserWithId?.BirthDate,
-          linkedin: linkedin ?? findUserWithId?.linkedin,
-          github: github ?? findUserWithId?.github,
-          instagram: instagram ?? findUserWithId?.instagram,
-          website: website ?? findUserWithId?.website,
-          whatsapp: whatsapp ?? findUserWithId?.whatsapp,
-          gender: gender ?? findUserWithId?.gender,
           role: role ?? findUserWithId?.role,
           status: status ?? findUserWithId?.status,
           photo_profile: photo_profile ?? findUserWithId?.photo_profile,

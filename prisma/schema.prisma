@@ -19,20 +19,15 @@ model User {
   NISN          String?
   schoolOrigin  String?
   role          Role          @default(SISWA)
-  biography     String?
-  linkedin      String?
-  github        String?
   status        Status  @default(NOTGRADUATE)
-  instagram     String?
-  website       String?
   whatsapp      String?
   BirthDate     String?
   religion      Religion?     @default(Islam)
   gender        Gender?       @default(Male)
   userAuth      UserAuth?
   teacherId     String?
-  taskId        String?
-  TaskUser      Task?     @relation("TaskUser",fields: [taskId], references: [id])
+  TaskUser      Task[]     
+  Sugestion     String?
   Teacher       User?     @relation("teacherToStudent", fields: [teacherId], references: [id])
   Student User[] @relation("teacherToStudent")
 }
@@ -48,12 +43,10 @@ model UserAuth {
 model Task{
   id          String          @id @default(uuid()) @map("task_id") @db.Char(36)
   Task  String?
-  UserId String 
-  user User[] @relation("TaskUser")
+  user User[] 
   userAuthTask    Boolean       @default(false)     
   teacherAuth Boolean       @default(false)
   status      RequestStatus   @default(PENDING)
-
 }
 
 enum Status {

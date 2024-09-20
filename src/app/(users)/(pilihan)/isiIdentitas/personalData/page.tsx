@@ -103,9 +103,6 @@ export default function PersonalData() {
               <TextField defaultValue={userData?.NISN as string} label="NISN" name="NISN" type="text" placeholder="Insert your NISN" />
               <TextField defaultValue={userData?.Phone as string} label="Phone" name="Phone" type="number" placeholder="Insert your Phone Number" />
               <TextField defaultValue={userData?.schoolOrigin as string} label="School origin" name="schoolOrigin" type="text" placeholder="Insert your School origin" />
-              <div className="mb-6">
-                <label className="text-[17px] font-normal">Skills</label>
-              </div>
 
               <div className="flex justify-between my-6 xl:my-12">
                 <div className="flex gap-[45px] items-center justify-end w-full">
