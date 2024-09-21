@@ -2,7 +2,7 @@ import { getToken } from "next-auth/jwt";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(req: NextRequest, res: NextResponse, next: NextFetchEvent) {
-  const requireAuthToken = ["/","/profile", "/profile/edit", "/isiIdentitas", "/isiIdentitas/personalData", "/isiIdentitas/achievement"];
+  const requireAuthToken = ["/","/profile", "/profile/edit","/checklist", "/isiIdentitas", "/isiIdentitas/personalData", "/isiIdentitas/achievement"];
   const pathname = req.nextUrl.pathname;
 
   const token = await getToken({
@@ -11,6 +11,7 @@ export default async function middleware(req: NextRequest, res: NextResponse, ne
   });
 
   if (requireAuthToken.includes(pathname) && !token) {
+    console.log(pathname)
     return NextResponse.redirect(new URL("/signin", req.url));
   }
 

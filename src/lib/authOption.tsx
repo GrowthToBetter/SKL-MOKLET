@@ -65,7 +65,7 @@ export const authOptions: AuthOptions = {
             where: {
               email: credentials?.email,
             },
-            include: { userAuth: true, TaskUser: true, Teacher: true },
+            include: { userAuth: true, TaskUser: true, Teacher: true, classTeacher:true },
           });
 
           if (!findUser) return null;

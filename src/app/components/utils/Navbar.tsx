@@ -126,6 +126,16 @@ export default function Navbar() {
                     </li>
                     <li>
                       <Link
+                        href="/Evaluasi"
+                        className={`${
+                          pathName === "/Evaluasi" ? "text-red-400" : "text-black"
+                        } rounded md:bg-transparent hover:text-red-600`}
+                      >
+                        Evaluasi
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
                         href="/partner"
                         className={`${
                           pathName === "/partner"
@@ -172,9 +182,9 @@ export default function Navbar() {
               </li>
               <li>
                 <Link
-                  href="/partner"
+                  href="/checklist"
                   className={`${
-                    pathName === "/partner" ? "text-highlight" : "text-white"
+                    pathName === "/checklist" ? "text-highlight" : "text-white"
                   } rounded md:hover:bg-transparent hover:text-highlight duration-500`}
                 >
                   Checklist

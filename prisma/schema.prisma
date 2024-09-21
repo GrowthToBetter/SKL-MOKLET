@@ -25,10 +25,17 @@ model User {
   religion      Religion?     @default(Islam)
   gender        Gender?       @default(Male)
   userAuth      UserAuth?
-  TaskUser      Task[]     
+  TaskUser      Task[]     @relation("Task_id")
   Sugestion     String?
+  classTeacher   classTeacher[] @relation("teacherClass")
   Teacher       User[]     @relation("teacherToStudent")
-  Student User[] @relation("teacherToStudent")
+  Student       User[]      @relation("teacherToStudent")
+}
+
+model classTeacher{
+  id         String    @id @default(uuid()) @map("class_teacher") @db.Char(36)
+  classesTeacher  String? 
+  user    User[] @relation("teacherClass")
 }
 
 model UserAuth {
@@ -42,16 +49,18 @@ model UserAuth {
 model Task{
   id          String          @id @default(uuid()) @map("task_id") @db.Char(36)
   Task  String?
-  user User[] 
+  user User[] @relation("Task_id")
   userAuthTask    Boolean       @default(false)     
   teacherAuth Boolean       @default(false)
   status      RequestStatus   @default(PENDING)
 }
 
+
 enum Status {
   NOTGRADUATE
   GRADUATE
 }
+
 
 enum Role {
   SISWA

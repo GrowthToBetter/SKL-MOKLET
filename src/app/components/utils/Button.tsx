@@ -78,7 +78,7 @@ export function FormButton({ className, children, disabled, loading, onClick, ty
       <button
         type={type}
         onClick={onClick}
-        className={`focus:outline-none text-white bg-base hover:bg-highlight focus:ring-4 focus:ring-red-400 font-medium  text-sm px-5 py-2.5 me-2 mb-2 ${className} flex w-fit items-center rounded-lg duration-300`}
+        className={`focus:outline-none text-highlight bg-base hover:bg-highlight hover:text-moklet focus:ring-4 border-2 border-moklet focus:ring-red-400 font-medium  text-sm px-5 py-2.5 me-2 mb-2 ${className} flex w-fit items-center rounded-lg duration-300`}
       >
         {withArrow ? (
           <div className="flex justify-center items-center gap-x-3">

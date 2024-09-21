@@ -1,11 +1,11 @@
 "use server";
 
-import { Gender, Religion, Role, Status } from "@prisma/client";
+import { Gender, Religion, Role, Status, Task } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { createUser, findUser, updateUser } from "../user.query";
 import { revalidatePath } from "next/cache";
 import { nextGetServerSession } from "@/lib/authOption";
-import { GetServerSideProps } from "next";
+
 
 export const UpdateUserById = async (data: FormData) => {
   try {
@@ -101,6 +101,36 @@ export const updateRole = async (id: string, data: FormData) => {
     throw new Error((error as Error).message)
   }
 };
+
+export const UpdateTaskUser = async (id: boolean, taskId: string, data: FormData) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session) {
+      throw new Error("Error while getting session");
+    }
+    const userAuthTask = data.get("userAuthTask") === "on";
+    const teacherAuth = data.get("teacherAuth") === "on";
+
+    const update = await prisma.task.update({
+      where: { id: taskId },
+      data: {
+        userAuthTask: userAuthTask,
+        teacherAuth: teacherAuth
+      }
+    });
+
+    if (!update) {
+      throw new Error("Error while updating data");
+    }
+    revalidatePath("/checklist");
+    
+    return update;
+  } catch (err) {
+    console.error(err); 
+    throw new Error((err as Error).message);
+  }
+};
+
 
 export const UpdateGeneralProfileById = async (data: FormData) => {
   try {
