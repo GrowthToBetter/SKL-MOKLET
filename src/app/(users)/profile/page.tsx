@@ -119,9 +119,6 @@ export default function Profile() {
           <p className="text-gray-500 text-lg sm:text-lg md:text-xl lg:text-xl">
             {userData?.clasess}
           </p>
-          <p className="text-left text-gray-600 text-lg sm:text-lg md:text-xl lg:text-xl mt-4 mb-8">
-            {userData?.biography}
-          </p>
           <div className="flex items-center gap-x-4 mb-2">
             <svg
               className="w-6 h-6 text-slate-800"
@@ -238,30 +235,6 @@ export default function Profile() {
             </h2>
             <ul className="space-y-6">
               <li className="flex items-center gap-x-3">
-                <LinkedinIcon />
-                <p className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">
-                  {userData?.linkedin}
-                </p>
-                <Link
-                  href={`https://linkedin.com/in/${userData?.linkedin}`}
-                  target="_blank"
-                >
-                  <RedirectArrow />
-                </Link>
-              </li>
-              <li className="flex items-center gap-x-3">
-                <GithubIcons />
-                <p className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">
-                  {userData?.github}
-                </p>
-                <Link
-                  href={`https://github.com/${userData?.github}`}
-                  target="_blank"
-                >
-                  <RedirectArrow />
-                </Link>
-              </li>
-              <li className="flex items-center gap-x-3">
                 <WhatsappIcons />
                 <p className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">
                   wa.me/{userData?.whatsapp}
@@ -273,18 +246,7 @@ export default function Profile() {
                   <RedirectArrow />
                 </Link>
               </li>
-              <li className="flex items-center gap-x-3">
-                <InstagramIcons />
-                <p className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">
-                  @{userData?.instagram}
-                </p>
-                <Link
-                  href={`https://www.instagram.com/${userData?.instagram}`}
-                  target="_blank"
-                >
-                  <RedirectArrow />
-                </Link>
-              </li>
+
             </ul>
           </div>
         </div>
@@ -312,11 +274,6 @@ export default function Profile() {
               readOnly
               disabled
               defaultValue={userData?.email as string}
-            />
-            <TextArea
-              label="Biography"
-              name="biography"
-              defaultValue={userData?.biography as string}
             />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3">
               <TextField
@@ -390,36 +347,6 @@ export default function Profile() {
                   name="whatsapp"
                   className="w-full"
                   defaultValue={userData?.whatsapp as string}
-                />
-              </div>
-              <div className="flex gap-x-3 items-center">
-                <InstagramIcons />
-                <TextField
-                  type="text"
-                  label="Instagram"
-                  name="instagram"
-                  className="w-full"
-                  defaultValue={userData?.instagram as string}
-                />
-              </div>
-              <div className="flex gap-x-3 items-center">
-                <LinkedinIcon />
-                <TextField
-                  type="text"
-                  label="Linkedin"
-                  name="linkedin"
-                  className="w-full"
-                  defaultValue={userData?.linkedin as string}
-                />
-              </div>
-              <div className="flex gap-x-3 items-center">
-                <GithubIcons />
-                <TextField
-                  type="text"
-                  label="Github"
-                  name="github"
-                  className="w-full"
-                  defaultValue={userData?.github as string}
                 />
               </div>
             </div>
