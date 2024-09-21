@@ -46,8 +46,8 @@ export default function List(props: any) {
                 {
                   <>
                     {teacher.name} -{" "}
-                    {teacher.Matkul
-                      ? teacher.Matkul
+                    {teacher.clasess
+                      ? teacher.clasess
                       : "guru belum mengatur jenis pelajaran yang dia ampu"}
                   </>
                 }
