@@ -49,7 +49,8 @@ export default function User(props: any) {
         <h1 className="font-semibold text-xl text-highlight p-3">
           Welcome back, {session?.user ? session?.user?.name : "user"}!
         </h1>
-        <div className="bg-moklet lg:w-[40rem] rounded-xl p-3 m-5">
+        {userData?.role=="SISWA"?
+        (<div className="bg-moklet lg:w-[40rem] rounded-xl p-3 m-5">
           <h1 className="font-semibold text-lg m-3 text-white">
             Keterangan yang sudah dikonfirmasi oleh guru pengajar
           </h1>
@@ -63,7 +64,9 @@ export default function User(props: any) {
               <h1 className="m-3">Belum Terverifikasi oleh guru pengajar : <span className="font-bold text-xl">{dontVerif}%</span></h1>
             </div>
           </div>
-        </div>
+        </div>):
+        ""
+      }
         <div className="bg-moklet lg:w-full rounded-xl p-3 m-5">
           <h1 className="font-bold text-lg m-3 text-white">
             Evaluasi Kompetensi
