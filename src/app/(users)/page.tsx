@@ -32,6 +32,17 @@ export default function User(props: any) {
 
     fetchUserData();
   }, [session]);
+  const tempVerif= userData?.TaskUser.filter((x)=>(x.status=="VERIFIED"))
+  const tempDontVerif= userData?.TaskUser.filter((x)=>(x.status=="PENDING"))
+  let verif=0;
+  let dontVerif=0;
+  if (tempVerif && userData?.TaskUser) {
+    verif = (tempVerif.length / userData.TaskUser.length) * 100;
+  } 
+  if (tempDontVerif && userData?.TaskUser) {
+    dontVerif = (tempDontVerif.length / userData.TaskUser.length) * 100;
+  } 
+
   return (
     <>
       <div className="mt-[100px] p-5 max-w m-10 flex justify-center flex-col">
@@ -45,20 +56,20 @@ export default function User(props: any) {
           <div className="bg-white border-2 border-highlight rounded-md p-5">
             <div className="flex items-center">
               <CheckSquare />
-              <h1 className="m-3"> Terverifikasi oleh guru pengajar : </h1>
+              <h1 className="m-3"> Terverifikasi oleh guru pengajar : <span className="font-bold text-xl">{verif}%</span></h1>
             </div>
             <div className="flex items-center">
               <XSquare />
-              <h1 className="m-3">Belum Terverifikasi oleh guru pengajar : </h1>
+              <h1 className="m-3">Belum Terverifikasi oleh guru pengajar : <span className="font-bold text-xl">{dontVerif}%</span></h1>
             </div>
           </div>
         </div>
-        <div className="bg-moklet lg:w-[40rem] rounded-xl p-3 m-5">
+        <div className="bg-moklet lg:w-full rounded-xl p-3 m-5">
           <h1 className="font-bold text-lg m-3 text-white">
             Evaluasi Kompetensi
           </h1>
-          <div className="bg-white border-2 border-highlight rounded-md p-5">
-            {userData? userData.Teacher.map((id, i)=>(<Hero userData={id} key={i}/>)) :  <h1 className="text-moklet"> Loading...</h1>}
+          <div className="bg-white border-2 flex w-full border-highlight rounded-md p-5">
+            {userData?.role=="SISWA"? userData.Teacher.map((id, i)=>(<Hero userData={id} key={i}/>)) : userData?.role=="GURU"?  userData.Student.map((id, i)=>(<Hero userData={id} key={i}/>)) : <h1 className="text-moklet"> Loading...</h1>}
           </div>
         </div>
       </div>
