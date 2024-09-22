@@ -40,9 +40,9 @@ export default function User(props: any) {
     fetchUserData();
   }, [session]);
   
-  
-  const tempVerif = userData?.TaskUser.filter((x) => x.status == "VERIFIED");
-  const tempDontVerif = userData?.TaskUser.filter((x) => x.status == "PENDING");
+  const filteredTask=userData?.TaskUser.filter((x)=>x.userId==session?.user?.id)
+  const tempVerif = filteredTask?.filter((x) => x.status == "VERIFIED");
+  const tempDontVerif = filteredTask?.filter((x) => x.status == "PENDING");
   let verif = 0;
   let dontVerif = 0;
   if (tempVerif && userData?.TaskUser) {

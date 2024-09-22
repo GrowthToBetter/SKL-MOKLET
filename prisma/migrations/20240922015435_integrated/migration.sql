@@ -1,14 +1,17 @@
 /*
   Warnings:
 
-  - You are about to drop the column `taskId` on the `User` table. All the data in the column will be lost.
+  - You are about to drop the `_taskTeacher` table. If the table is not empty, all the data it contains will be lost.
 
 */
 -- DropForeignKey
-ALTER TABLE `User` DROP FOREIGN KEY `task_fkey`;
+ALTER TABLE `_taskTeacher` DROP FOREIGN KEY `_taskTeacher_A_fkey`;
 
--- AlterTable
-ALTER TABLE `User` DROP COLUMN `taskId`;
+-- DropForeignKey
+ALTER TABLE `_taskTeacher` DROP FOREIGN KEY `_taskTeacher_B_fkey`;
+
+-- DropTable
+DROP TABLE `_taskTeacher`;
 
 -- CreateTable
 CREATE TABLE `_TaskToUser` (

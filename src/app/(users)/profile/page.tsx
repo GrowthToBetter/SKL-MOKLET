@@ -76,7 +76,6 @@ export default function Profile() {
   };
   if (status === "unauthenticated") return router.push("/signin");
   if (status === "loading") return "Loading...";
-  console.log(userData?.classTeacher)
   return (
     <div className="bg-slate-100 p-0 sm:p-5 md:p-10 lg:p-15 xl:p-20">
       <div className="mt-24 bg-white rounded-3xl p-10 sm:p-10 md:p-15 lg:p-20 xl:p-24 relative overflow-hidden">

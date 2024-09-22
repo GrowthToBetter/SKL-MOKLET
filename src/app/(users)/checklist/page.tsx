@@ -13,6 +13,29 @@ import { DropDown, TextField } from "@/app/components/utils/Form";
 import { Role } from "@prisma/client";
 import { FormButton } from "@/app/components/utils/Button";
 
+{
+  /* <>
+          <h1 className="m-3">
+            Validate Siswa{" "}
+            <input
+              type="checkbox"
+              disabled={true}
+              name="userAuthTask"
+              defaultChecked={task.userAuthTask}
+            />
+          </h1>
+          <h1 className="m-3">
+            Validate Teacher{" "}
+            <input
+              type="checkbox"
+              disabled={false}
+              name="teacherAuth"
+              defaultChecked={task.teacherAuth}
+            />
+          </h1>
+        </> */
+}
+
 export default function Checklist() {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<userFullPayload | null>(null);
@@ -47,7 +70,13 @@ export default function Checklist() {
       const teacherAuth = formData.get("teacherAuth") === "on";
 
       const toastID = toast.loading("Updating task...");
-      const updateResult = await UpdateTaskUser(userAuthTask, id, formData);
+      let updateResult;
+      if(userData?.role==="SISWA"){
+        updateResult = await UpdateTaskUser(userAuthTask, id, formData);
+      } 
+      if (userData?.role==="GURU"){
+        updateResult = await UpdateTaskUser(teacherAuth, id, formData);
+      }
       if (updateResult) {
         toast.success("Task updated successfully!", { id: toastID });
       } else {
@@ -62,55 +91,30 @@ export default function Checklist() {
   if (status === "loading") return "Loading...";
   return (
     <div className="grid grid-cols-1 grid-rows-3 p-4 pt-36 gap-y-4">
-      {userData?.TaskUser && userData.TaskUser.length > 0 ? (
-        userData.TaskUser.map((task, x: React.Key) => (
+      {userData?.role === "SISWA" ? (
+        userData?.TaskUser.map((task, x: React.Key) => (
           <form onSubmit={(e) => handleSubmit(e, task.id)} key={x}>
             <div className="flex items-center m-5 justify-between p-3 bg-white drop-shadow rounded-[12px]">
               <div className="flex justify-between w-full">
                 <p className="text-[20px] font-medium mx-5">{task.Task}</p>
                 <span className="flex">
-                  {session?.user?.role === "SISWA" ? (
-                    <>
-                      <h1 className="m-3">
-                        Validate Siswa{" "}
-                        <input
-                          type="checkbox"
-                          name="userAuthTask"
-                          defaultChecked={task.userAuthTask}
-                        />
-                      </h1>
-                      <h1 className="m-3">
-                        Validate Teacher{" "}
-                        <input
-                          type="checkbox"
-                          disabled={true}
-                          name="teacherAuth"
-                          defaultChecked={task.teacherAuth}
-                        />
-                      </h1>
-                    </>
-                  ) : (
-                    <>
-                      <h1 className="m-3">
-                        Validate Siswa{" "}
-                        <input
-                          type="checkbox"
-                          disabled={true}
-                          name="userAuthTask"
-                          defaultChecked={task.userAuthTask}
-                        />
-                      </h1>
-                      <h1 className="m-3">
-                        Validate Teacher{" "}
-                        <input
-                          type="checkbox"
-                          disabled={false}
-                          name="teacherAuth"
-                          defaultChecked={task.teacherAuth}
-                        />
-                      </h1>
-                    </>
-                  )}
+                  <h1 className="m-3">
+                    Validate Siswa{" "}
+                    <input
+                      type="checkbox"
+                      name="userAuthTask"
+                      defaultChecked={task.userAuthTask}
+                    />
+                  </h1>
+                  <h1 className="m-3">
+                    Validate Teacher{" "}
+                    <input
+                      type="checkbox"
+                      disabled={true}
+                      name="teacherAuth"
+                      defaultChecked={task.teacherAuth}
+                    />
+                  </h1>
                 </span>
               </div>
             </div>
@@ -118,6 +122,42 @@ export default function Checklist() {
               Submit
             </FormButton>
           </form>
+        ))
+      ) : userData?.role === "GURU" ? (
+        userData?.TaskTeacher.map((task, i) => (
+          <>
+            <form onSubmit={(e) => handleSubmit(e, task.id)} key={i}>
+              <div className="flex items-center m-5 justify-between p-3 bg-white drop-shadow rounded-[12px]">
+                <div className="flex justify-between w-full">
+                  <p className="text-[20px] font-medium mx-5">{task.Task} </p>
+                  <p> {userData.Student.find(student => student.id === task.userId)?.name}</p>
+                  <span className="flex">
+                    <h1 className="m-3">
+                      Validate Siswa{" "}
+                      <input
+                        type="checkbox"
+                        disabled={true}
+                        name="userAuthTask"
+                        defaultChecked={task.userAuthTask}
+                      />
+                    </h1>
+                    <h1 className="m-3">
+                      Validate Teacher{" "}
+                      <input
+                        type="checkbox"
+                        disabled={false}
+                        name="teacherAuth"
+                        defaultChecked={task.teacherAuth}
+                      />
+                    </h1>
+                  </span>
+                </div>
+              </div>
+              <FormButton type="submit" variant="base">
+                Submit
+              </FormButton>
+            </form>
+          </>
         ))
       ) : (
         <p>No tasks available</p>
