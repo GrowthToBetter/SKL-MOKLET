@@ -1,11 +1,25 @@
 "use server";
 
-import { Gender, Religion, RequestStatus, Role, Status, Task } from "@prisma/client";
+import {
+  Gender,
+  Prisma,
+  Religion,
+  RequestStatus,
+  Role,
+  Status,
+  Task,
+  User,
+} from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { createUser, findUser, updateUser } from "../user.query";
+import {
+  createTaskUser,
+  createUser,
+  findTaskIdWithName,
+  findUser,
+  updateUser,
+} from "../user.query";
 import { revalidatePath } from "next/cache";
 import { nextGetServerSession } from "@/lib/authOption";
-
 
 export const UpdateUserById = async (data: FormData) => {
   try {
@@ -80,6 +94,25 @@ export const UpdateUserById = async (data: FormData) => {
   }
 };
 
+export const UpdateTaskUserAuth = async (data: FormData, taskTeacherData: { connect: { id: string }[] }) => {
+  const session = await nextGetServerSession();
+  const Task = data.get("Task") as string;
+  const userId = data.get("user") as string;
+  try {
+    const create = await createTaskUser({
+      Task,
+      status:"PENDING",
+      task:taskTeacherData,
+      teacherAuth:false,
+      userAuthTask:false,
+      userId 
+    });
+    
+  } catch (error) {
+    throw new Error((error as Error).message)
+  }
+};
+
 export const updateRole = async (id: string, data: FormData) => {
   try {
     const session = await nextGetServerSession();
@@ -88,23 +121,27 @@ export const updateRole = async (id: string, data: FormData) => {
     }
 
     const role = data.get("role") as Role;
-    const update = await prisma.user.update({where: {id: id} , data:{
-      role
-    }});
-    if(!update){
+    const update = await prisma.user.update({
+      where: { id: id },
+      data: {
+        role,
+      },
+    });
+    if (!update) {
       throw new Error("eror");
-
     }
-    revalidatePath("/admin/studentData")
-    return update
+    revalidatePath("/admin/studentData");
+    return update;
   } catch (error) {
-    throw new Error((error as Error).message)
+    throw new Error((error as Error).message);
   }
 };
 
-
-
-export const UpdateTaskUser = async (id: RequestStatus, taskId: string, data: FormData) => {
+export const UpdateTaskUser = async (
+  id: RequestStatus,
+  taskId: string,
+  data: FormData
+) => {
   try {
     const session = await nextGetServerSession();
     if (!session) {
@@ -116,8 +153,8 @@ export const UpdateTaskUser = async (id: RequestStatus, taskId: string, data: Fo
       where: { id: taskId },
       data: {
         userAuthTask: userAuthTask,
-        status:id,
-      }
+        status: id,
+      },
     });
 
     if (!update) {
@@ -127,11 +164,15 @@ export const UpdateTaskUser = async (id: RequestStatus, taskId: string, data: Fo
     revalidatePath("/");
     return update;
   } catch (err) {
-    console.error(err); 
+    console.error(err);
     throw new Error((err as Error).message);
   }
 };
-export const UpdateTaskTeacher = async (id:RequestStatus , taskId: string, data: FormData) => {
+export const UpdateTaskTeacher = async (
+  id: RequestStatus,
+  taskId: string,
+  data: FormData
+) => {
   try {
     const session = await nextGetServerSession();
     if (!session) {
@@ -143,8 +184,8 @@ export const UpdateTaskTeacher = async (id:RequestStatus , taskId: string, data:
       where: { id: taskId },
       data: {
         teacherAuth: teacherAuth,
-        status:id,
-      }
+        status: id,
+      },
     });
 
     if (!update) {
@@ -154,11 +195,10 @@ export const UpdateTaskTeacher = async (id:RequestStatus , taskId: string, data:
     revalidatePath("/");
     return update;
   } catch (err) {
-    console.error(err); 
+    console.error(err);
     throw new Error((err as Error).message);
   }
 };
-
 
 export const UpdateGeneralProfileById = async (data: FormData) => {
   try {
@@ -232,7 +272,3 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
     throw error;
   }
 };
-
-
-
-

@@ -22,9 +22,6 @@ export default function Profile() {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<userFullPayload | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [addSkillModal, setAddSkillModal] = useState(false);
-  const [addProjectModal, setAddProjectModal] = useState(false);
-
   const router = useRouter();
   const [modal, setModal] = useState(false);
 
@@ -51,13 +48,6 @@ export default function Profile() {
   const handleModal = () => {
     setModal(!modal);
   };
-  const handleSkillModal = () => {
-    setAddSkillModal(!addSkillModal);
-  };
-  const handleProjectModal = () => {
-    setAddProjectModal(!addProjectModal);
-  };
-
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
 

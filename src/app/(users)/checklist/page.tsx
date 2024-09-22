@@ -13,29 +13,8 @@ import {
 import { DropDown, TextField } from "@/app/components/utils/Form";
 import { RequestStatus, Role } from "@prisma/client";
 import { FormButton } from "@/app/components/utils/Button";
+import ListTask from "./_components/ListTask/page";
 
-{
-  /* <>
-          <h1 className="m-3">
-            Validate Siswa{" "}
-            <input
-              type="checkbox"
-              disabled={true}
-              name="userAuthTask"
-              defaultChecked={task.userAuthTask}
-            />
-          </h1>
-          <h1 className="m-3">
-            Validate Teacher{" "}
-            <input
-              type="checkbox"
-              disabled={false}
-              name="teacherAuth"
-              defaultChecked={task.teacherAuth}
-            />
-          </h1>
-        </> */
-}
 
 export default function Checklist() {
   const { data: session, status } = useSession();
@@ -189,6 +168,11 @@ export default function Checklist() {
       ) : (
         <p>No tasks available</p>
       )}
+      {userData?.role=="GURU"?
+      <ListTask userData={userData} student={userData.Student.map((student, i)=>(
+      student.id))}/>
+      :""
+    }
     </div>
   );
 }

@@ -28,7 +28,11 @@ export default function Signin() {
   useEffect(() => {
     if (session && userData) {
       setIsLoading(true);
-      if (userData) {
+      if (userData.role === "UNDEFINED") {
+        toast.success("Berhasil Login!");
+        router.push("/pilihRole");
+        setIsLoading(false);
+      } else if (["SISWA", "GURU", "ADMIN"].includes(userData.role)) {
         toast.success("Berhasil Login!");
         router.push("/profile");
         setIsLoading(false);

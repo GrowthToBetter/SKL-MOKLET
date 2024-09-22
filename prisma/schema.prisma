@@ -18,7 +18,7 @@ model User {
   NIS           String?
   NISN          String?
   schoolOrigin  String?
-  role          Role          @default(SISWA)
+  role          Role          @default(UNDEFINED)
   status        Status  @default(NOTGRADUATE)
   whatsapp      String?
   BirthDate     String?
@@ -51,7 +51,7 @@ model Task{
   id          String          @id @default(uuid()) @map("task_id") @db.Char(36)
   Task  String?
   userId String?
-  taskTeacher User[] @relation("task_teacher")
+  task User[] @relation("task_teacher")
   user User? @relation("Task_id", fields: [userId], references: [id])
   userAuthTask    Boolean       @default(false)     
   teacherAuth Boolean       @default(false)
@@ -59,6 +59,10 @@ model Task{
 }
 
 
+model taskList {
+  id         String    @id @default(uuid()) @map("task_list") @db.Char(36)
+  task        String?
+} 
 
 enum Status {
   NOTGRADUATE
@@ -70,6 +74,7 @@ enum Role {
   SISWA
   GURU
   ADMIN
+  UNDEFINED
 }
 
 enum Gender {
