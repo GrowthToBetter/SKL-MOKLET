@@ -1,6 +1,6 @@
 "use server";
 
-import { Gender, Religion, Role, Status, Task } from "@prisma/client";
+import { Gender, Religion, RequestStatus, Role, Status, Task } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { createUser, findUser, updateUser } from "../user.query";
 import { revalidatePath } from "next/cache";
@@ -102,20 +102,21 @@ export const updateRole = async (id: string, data: FormData) => {
   }
 };
 
-export const UpdateTaskUser = async (id: boolean, taskId: string, data: FormData) => {
+
+
+export const UpdateTaskUser = async (id: RequestStatus, taskId: string, data: FormData) => {
   try {
     const session = await nextGetServerSession();
     if (!session) {
       throw new Error("Error while getting session");
     }
     const userAuthTask = data.get("userAuthTask") === "on";
-    const teacherAuth = data.get("teacherAuth") === "on";
 
     const update = await prisma.task.update({
       where: { id: taskId },
       data: {
         userAuthTask: userAuthTask,
-        teacherAuth: teacherAuth
+        status:id,
       }
     });
 
@@ -123,7 +124,34 @@ export const UpdateTaskUser = async (id: boolean, taskId: string, data: FormData
       throw new Error("Error while updating data");
     }
     revalidatePath("/checklist");
-    
+    revalidatePath("/");
+    return update;
+  } catch (err) {
+    console.error(err); 
+    throw new Error((err as Error).message);
+  }
+};
+export const UpdateTaskTeacher = async (id:RequestStatus , taskId: string, data: FormData) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session) {
+      throw new Error("Error while getting session");
+    }
+    const teacherAuth = data.get("teacherAuth") === "on";
+
+    const update = await prisma.task.update({
+      where: { id: taskId },
+      data: {
+        teacherAuth: teacherAuth,
+        status:id,
+      }
+    });
+
+    if (!update) {
+      throw new Error("Error while updating data");
+    }
+    revalidatePath("/checklist");
+    revalidatePath("/");
     return update;
   } catch (err) {
     console.error(err); 

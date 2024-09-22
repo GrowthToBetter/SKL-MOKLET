@@ -7,10 +7,11 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
   updateRole,
+  UpdateTaskTeacher,
   UpdateTaskUser,
 } from "@/utils/server-action/userGetServerSession";
 import { DropDown, TextField } from "@/app/components/utils/Form";
-import { Role } from "@prisma/client";
+import { RequestStatus, Role } from "@prisma/client";
 import { FormButton } from "@/app/components/utils/Button";
 
 {
@@ -69,13 +70,32 @@ export default function Checklist() {
       const userAuthTask = formData.get("userAuthTask") === "on";
       const teacherAuth = formData.get("teacherAuth") === "on";
 
+      const task =
+        userData?.role === "SISWA"
+          ? userData?.TaskUser.find((task) => task.id === id)
+          : userData?.TaskTeacher.find((task) => task.id === id);
+      const normalizedTask = task
+          ? {
+              id: task.id,
+              Task: task.Task,
+              userId: task.userId,
+              userAuthTask: task.userAuthTask,
+              teacherAuth: task.teacherAuth,
+              status: task.status || "PENDING",
+            }
+          : null;
+      let status:RequestStatus = normalizedTask?.status ?? "PENDING";;
+      if (normalizedTask?.userAuthTask && normalizedTask?.teacherAuth) {
+        status = "VERIFIED";
+      }
       const toastID = toast.loading("Updating task...");
       let updateResult;
-      if(userData?.role==="SISWA"){
-        updateResult = await UpdateTaskUser(userAuthTask, id, formData);
-      } 
-      if (userData?.role==="GURU"){
-        updateResult = await UpdateTaskUser(teacherAuth, id, formData);
+
+      if (userData?.role === "SISWA") {
+        updateResult = await UpdateTaskUser(status, id, formData);
+      }
+      if (userData?.role === "GURU") {
+        updateResult = await UpdateTaskTeacher(status, id, formData);
       }
       if (updateResult) {
         toast.success("Task updated successfully!", { id: toastID });
@@ -130,7 +150,14 @@ export default function Checklist() {
               <div className="flex items-center m-5 justify-between p-3 bg-white drop-shadow rounded-[12px]">
                 <div className="flex justify-between w-full">
                   <p className="text-[20px] font-medium mx-5">{task.Task} </p>
-                  <p> {userData.Student.find(student => student.id === task.userId)?.name}</p>
+                  <p>
+                    {" "}
+                    {
+                      userData.Student.find(
+                        (student) => student.id === task.userId
+                      )?.name
+                    }
+                  </p>
                   <span className="flex">
                     <h1 className="m-3">
                       Validate Siswa{" "}
