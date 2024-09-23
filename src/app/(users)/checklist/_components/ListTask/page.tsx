@@ -59,7 +59,6 @@ export default function ListTask(props: any) {
           
           await UpdateTaskUserAuth(formData, taskTeacherData);
         };
-        return;
       });
       return toast.success("Task updated successfully!");
     } catch (error) {
