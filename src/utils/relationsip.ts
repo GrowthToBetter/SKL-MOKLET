@@ -11,4 +11,4 @@ export type teacherFullPayload = Prisma.UserGetPayload<{
   include: {Teacher: true, Student:true, classTeacher:true, TaskTeacher:true}
 }>;
 
-export type taskFullPayload = Prisma.taskListGetPayload<{}>;
+export type taskListFullPayload = Prisma.taskListGetPayload<{}>;

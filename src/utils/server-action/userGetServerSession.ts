@@ -107,7 +107,8 @@ export const UpdateTaskUserAuth = async (data: FormData, taskTeacherData: { conn
       userAuthTask:false,
       userId 
     });
-    
+    revalidatePath("/checklist")
+    return create
   } catch (error) {
     throw new Error((error as Error).message)
   }
@@ -138,7 +139,7 @@ export const updateRole = async (id: string, data: FormData) => {
 };
 
 export const UpdateTaskUser = async (
-  id: RequestStatus,
+  status: RequestStatus,
   taskId: string,
   data: FormData
 ) => {
@@ -153,7 +154,7 @@ export const UpdateTaskUser = async (
       where: { id: taskId },
       data: {
         userAuthTask: userAuthTask,
-        status: id,
+        status,
       },
     });
 
@@ -169,7 +170,7 @@ export const UpdateTaskUser = async (
   }
 };
 export const UpdateTaskTeacher = async (
-  id: RequestStatus,
+  status: RequestStatus,
   taskId: string,
   data: FormData
 ) => {
@@ -184,7 +185,7 @@ export const UpdateTaskTeacher = async (
       where: { id: taskId },
       data: {
         teacherAuth: teacherAuth,
-        status: id,
+        status,
       },
     });
 

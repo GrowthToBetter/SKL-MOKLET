@@ -53,13 +53,15 @@ export default function Checklist() {
         userData?.role === "SISWA"
           ? userData?.TaskUser.find((task) => task.id === id)
           : userData?.TaskTeacher.find((task) => task.id === id);
+      let userAuthTaskValidation= userData?.role=="SISWA"? userAuthTask:task?.userAuthTask
+      let teacherAuthValidation= userData?.role=="GURU"? teacherAuth:task?.teacherAuth
       const normalizedTask = task
           ? {
               id: task.id,
               Task: task.Task,
               userId: task.userId,
-              userAuthTask: task.userAuthTask,
-              teacherAuth: task.teacherAuth,
+              userAuthTask:userAuthTaskValidation,
+              teacherAuth: teacherAuthValidation,
               status: task.status || "PENDING",
             }
           : null;
@@ -67,9 +69,9 @@ export default function Checklist() {
       if (normalizedTask?.userAuthTask && normalizedTask?.teacherAuth) {
         status = "VERIFIED";
       }
+      console.log(status)
       const toastID = toast.loading("Updating task...");
       let updateResult;
-
       if (userData?.role === "SISWA") {
         updateResult = await UpdateTaskUser(status, id, formData);
       }
@@ -81,6 +83,7 @@ export default function Checklist() {
       } else {
         toast.error("Failed to update task", { id: toastID });
       }
+      return updateResult;
     } catch (error) {
       toast.error("An error occurred");
       console.error(error);

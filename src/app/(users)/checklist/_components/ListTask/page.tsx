@@ -1,6 +1,6 @@
 "use client";
 
-import { taskFullPayload, userFullPayload } from "@/utils/relationsip";
+import { taskListFullPayload, userFullPayload } from "@/utils/relationsip";
 import { useSession } from "next-auth/react";
 import { FormEvent, useEffect, useState } from "react";
 import { FormButton } from "@/app/components/utils/Button";
@@ -11,7 +11,7 @@ import { UpdateTaskUserAuth } from "@/utils/server-action/userGetServerSession";
 
 export default function ListTask(props: any) {
   const { data: session, status } = useSession();
-  const [listData, setListData] = useState<taskFullPayload[] | null>(null);
+  const [listData, setListData] = useState<taskListFullPayload[] | null>(null);
   const [modal, setModal] = useState(false);
   const handleModal = () => {
     setModal(!modal);
@@ -39,27 +39,32 @@ export default function ListTask(props: any) {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    props.student.forEach((userStudent: string) => {
-      const formData = new FormData(e.target as HTMLFormElement);
-      const selectedTaskIds = formData.getAll("taskId") as string[];
-      const filteredTaskId = listData?.filter((exe) =>
-        selectedTaskIds.includes(exe.id)
-      );
-      filteredTaskId?.forEach(async (task) => {
-        const taskValue = task.task ?? "";
-        const taskTeacherData = {
-          connect: [{ id: props.userData.id }],
+    try {
+      props.student.forEach(async (userStudent: string) => {
+        const formData = new FormData(e.target as HTMLFormElement);
+        const selectedTaskIds = formData.getAll("taskId") as string[];
+        const filteredTaskId = listData?.filter((exe) =>
+          selectedTaskIds.includes(exe.id)
+        );
+        for (const task of filteredTaskId ?? []) {
+          const taskValue = task.task ?? "";
+          let taskTeacherData = {
+            connect: [{ id: props.userData.id }],
+          };
+          let userConnection = {
+            connect: { id: userStudent },
+          };
+          formData.set("Task", taskValue);
+          formData.set("user", userConnection.connect.id);
+          
+          await UpdateTaskUserAuth(formData, taskTeacherData);
         };
-        const userConnection = {
-          connect: { id: userStudent },
-        };
-        formData.set("Task", taskValue);
-        formData.set("user", userConnection.connect.id);
-        
-        await UpdateTaskUserAuth(formData, taskTeacherData);
+        return;
       });
-    });
-    toast.success("Task updated successfully!");
+      return toast.success("Task updated successfully!");
+    } catch (error) {
+      throw new Error((error as Error).message)
+    }
   };
   return (
     <>
@@ -74,7 +79,7 @@ export default function ListTask(props: any) {
         >
           <div className="grid grid-cols-1 grid-rows-3 p-4 pt-36 gap-y-4">
             <form onSubmit={(e) => handleSubmit(e)}>
-              {listData?.map((task, x: React.Key) => (
+              {listData?.map((useTask, x: React.Key) => (
                 <>
                   <div
                     className="flex items-center m-5 justify-between p-3 bg-white drop-shadow rounded-[12px]"
@@ -82,14 +87,14 @@ export default function ListTask(props: any) {
                   >
                     <div className="flex justify-between w-full">
                       <p className="text-[20px] font-medium mx-5">
-                        {task.task}
+                        {useTask.task}
                       </p>
                       <span className="flex">
                         <h1 className="m-3">
                           <input
                             type="checkbox"
                             name="taskId"
-                            value={task.id}
+                            value={useTask.id}
                             defaultChecked={false}
                           />
                         </h1>
