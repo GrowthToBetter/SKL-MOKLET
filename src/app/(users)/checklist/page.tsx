@@ -88,7 +88,7 @@ export default function Checklist() {
       console.error(error);
     }
   };
-  if (status === "unauthenticated" || !userData?.clasess || !userData?.title) return router.push("/signin");
+  if (status === "unauthenticated") return router.push("/signin");
   if (status === "loading") return "Loading...";
   return (
     <div className="grid grid-cols-1 grid-rows-3 p-4 pt-36 gap-y-4">

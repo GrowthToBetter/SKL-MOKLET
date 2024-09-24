@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { userFullPayload } from "@/utils/relationsip";
-import { Gender, Religion } from "@prisma/client";
+import { Class, Gender, Religion, Title } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import RedirectArrow from "@/app/components/Icons/RedirectArrow";
@@ -24,7 +24,8 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const [modal, setModal] = useState(false);
-
+  const [selectedClass, setSelectedClass] = useState<{ [key: string]: string }>({});
+  const [selectedSpecialist, setSelectedSpecialist] = useState<{ [key: string]: string }>({});
   useEffect(() => {
     const fetchUserData = async () => {
       if (session) {
@@ -44,7 +45,18 @@ export default function Profile() {
 
     fetchUserData();
   }, [session]);
-
+  const handleRoleChangeClass = (userId: string, newClass: string) => {
+    setSelectedClass((prev) => ({
+      ...prev,
+      [userId]: newClass, 
+    }));
+  };
+  const handleRoleChangeSpecialist = (userId: string, newSpecialist: string) => {
+    setSelectedSpecialist((prev) => ({
+      ...prev,
+      [userId]: newSpecialist, 
+    }));
+  };
   const handleModal = () => {
     setModal(!modal);
   };
@@ -164,13 +176,33 @@ export default function Profile() {
               defaultValue={userData?.email as string}
             />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3">
-              {session?.user?.role=="SISWA" ? (<>
-                <TextField
-                type="text"
-                label="Class"
-                name="clasess"
-                defaultValue={userData?.clasess as string}
-              />
+              {session?.user ? (<>
+                <DropDown
+                  label="Class"
+                  options={Object.values(Class).map((classes) => ({
+                    label: classes,
+                    value: classes,
+                  }))}
+                  className="rounded-xl flex justify-center items-center bg-moklet text-black p-3 m-3 font-bold"
+                  name={`classes`}
+                  value={selectedClass[userData?.id || 0] || (userData?.clasess||undefined)}
+                  handleChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                    handleRoleChangeClass((userData?.id || ""), e.target.value)
+                  }
+                />
+                <DropDown
+                  label="Specialist"
+                  options={Object.values(Title).map((special) => ({
+                    label: special,
+                    value: special,
+                  }))}
+                  className="rounded-xl flex justify-center items-center bg-moklet text-black p-3 m-3 font-bold"
+                  name={`specialist`}
+                  value={selectedSpecialist[userData?.id || 0] || (userData?.title||undefined)}
+                  handleChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                    handleRoleChangeSpecialist((userData?.id || ""), e.target.value)
+                  }
+                />
               <TextField
                 type="text"
                 label="Absent"

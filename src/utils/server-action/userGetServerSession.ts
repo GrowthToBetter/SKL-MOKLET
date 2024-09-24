@@ -22,6 +22,7 @@ import {
 } from "../user.query";
 import { revalidatePath } from "next/cache";
 import { nextGetServerSession } from "@/lib/authOption";
+import { useRouter } from "next/navigation";
 
 export const UpdateUserById = async (data: FormData) => {
   try {
@@ -42,6 +43,7 @@ export const UpdateUserById = async (data: FormData) => {
     const status = data.get("status") as Status;
     const BirthDate = data.get("BirthDate") as string;
     const religion = data.get("religion") as Religion;
+    const title = data.get("specialist") as Title;
     const gender = data.get("gender") as Gender;
     if (!id) {
       const create = await createUser({
@@ -56,6 +58,7 @@ export const UpdateUserById = async (data: FormData) => {
         Phone,
         schoolOrigin,
         status,
+        title,
         BirthDate,
         religion,
         gender,
@@ -65,17 +68,6 @@ export const UpdateUserById = async (data: FormData) => {
       const findUserWithId = await prisma.user.findUnique({
         where: { id },
       });
-      if(email.includes("student")){
-        const dataUpdateRole=new FormData();
-        dataUpdateRole.set("role","SISWA")
-        const userUpdateRole= await updateRole(id, dataUpdateRole)
-        if (!userUpdateRole) throw new Error("Failed to create");
-      } else{
-        const dataUpdateRole=new FormData();
-        dataUpdateRole.set("role","GURU")
-        const userUpdateRole= await updateRole(id, dataUpdateRole)
-        if (!userUpdateRole) throw new Error("Failed to create");
-      }
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
         {
@@ -90,12 +82,24 @@ export const UpdateUserById = async (data: FormData) => {
           BirthDate: BirthDate ?? findUserWithId?.BirthDate,
           gender: gender ?? findUserWithId?.gender,
           role: role ?? findUserWithId?.role,
+          title: title?? findUserWithId?.title,
           status: status ?? findUserWithId?.status,
           photo_profile: photo_profile ?? findUserWithId?.photo_profile,
           religion: religion ?? findUserWithId?.religion,
         }
       );
       if (!update) throw new Error("Update failed");
+      if (email.includes("student")) {
+        const dataUpdateRole = new FormData();
+        dataUpdateRole.set("role", "SISWA");
+        const userUpdateRole = await updateRole(id, dataUpdateRole);
+        if (!userUpdateRole) throw new Error("Failed to create");
+      } else {
+        const dataUpdateRole = new FormData();
+        dataUpdateRole.set("role", "GURU");
+        const userUpdateRole = await updateRole(id, dataUpdateRole);
+        if (!userUpdateRole) throw new Error("Failed to create");
+      }
     } else {
       throw new Error("Email already exists");
     }
@@ -106,31 +110,35 @@ export const UpdateUserById = async (data: FormData) => {
   }
 };
 
-export const UpdateTaskUserAuth = async (data: FormData, taskTeacherData: { connect: { id: string }[] }, userConnect: { connect: { id: string } }) => {
+export const UpdateTaskUserAuth = async (
+  data: FormData,
+  taskTeacherData: { connect: { id: string }[] },
+  userConnect: { connect: { id: string } }
+) => {
   const session = await nextGetServerSession();
   const Task = data.get("Task") as string;
   const userId = userConnect.connect.id;
-  const classes= data.get("classes") as Class;
-  const title=data.get("title") as Title
+  const classes = data.get("classes") as Class;
+  const title = data.get("title") as Title;
   try {
     const create = await createTaskUser({
       Task,
-      status:"PENDING",
-      task:taskTeacherData,
-      teacherAuth:false,
-      userAuthTask:false,
+      status: "PENDING",
+      task: taskTeacherData,
+      teacherAuth: false,
+      userAuthTask: false,
       userId,
       classes,
-      title
+      title,
     });
-    revalidatePath("/checklist")
-    return create
+    revalidatePath("/checklist");
+    return create;
   } catch (error) {
-    throw new Error((error as Error).message)
+    throw new Error((error as Error).message);
   }
 };
 
-export const updateIdentity=async (id:string, data:FormData)=>{
+export const updateIdentity = async (id: string, data: FormData) => {
   try {
     const session = await nextGetServerSession();
     if (!session) {
@@ -143,7 +151,7 @@ export const updateIdentity=async (id:string, data:FormData)=>{
       where: { id: id },
       data: {
         clasess,
-        title:Title,
+        title: Title,
       },
     });
     if (!update) {
@@ -152,11 +160,12 @@ export const updateIdentity=async (id:string, data:FormData)=>{
     revalidatePath("/admin/studentData");
     revalidatePath("/checklist");
     revalidatePath("/profile");
+    revalidatePath("/signin");
     return update;
   } catch (error) {
     throw new Error((error as Error).message);
   }
-}
+};
 
 export const updateRole = async (id: string, data: FormData) => {
   try {

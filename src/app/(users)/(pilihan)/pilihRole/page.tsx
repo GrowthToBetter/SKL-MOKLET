@@ -37,25 +37,23 @@ export default function PilihKeahlian() {
         }
       }
     };
-
     fetchUserData();
   }, [session]);
-
-  if (status === "unauthenticated") router.push("/signin");
-
+  
   const handleRoleChangeClass = (userId: string, newClass: string) => {
     setSelectedClass((prev) => ({
       ...prev,
       [userId]: newClass, 
     }));
   };
+  
   const handleRoleChangeSpecialist = (userId: string, newSpecialist: string) => {
     setSelectedSpecialist((prev) => ({
       ...prev,
       [userId]: newSpecialist, 
     }));
   };
-
+  
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -72,17 +70,15 @@ export default function PilihKeahlian() {
       }
       if(userData?.id){
         await updateIdentity(userData.id, formData);
+        router.push("/profile");;
       }
       toast.success("Identity updated successfully!", { id: toastID });
-      if(userData?.clasess && userData.title){
-        router.push("/profile");
-      }
+      
     } catch (error) {
       toast.error("Failed to update Identity!");
       throw new Error((error as Error).message);
     }
   };
-
   return (
     <React.Fragment>
       <main className="flex max-w-full w-full h-screen items-center justify-center">
@@ -96,7 +92,7 @@ export default function PilihKeahlian() {
               className="flex items-center w-fit m-5 justify-between p-3 bg-white drop-shadow rounded-[12px]"
             >
               <p className="lg:text-lg text-md font-bold w-fit mx-5">{userData?.name}</p>
-              <p className="lg:text-lg text-md font-bold w-fit mx-5">{userData?.email}</p>
+              <p className="lg:text-lg text-md font-bold w-fit mx-5">{userData?.role}</p>
               <div className="flex items-center">
                 <DropDown
                   label="Class"

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Hero from "./_components/Hero/page";
 import { userFullPayload } from "@/utils/relationsip";
 import {useRouter} from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function User(props: any) {
   const { data: session, status } = useSession();
@@ -51,7 +52,8 @@ export default function User(props: any) {
   if (tempDontVerif && userData?.TaskUser) {
     dontVerif = (tempDontVerif.length / userData.TaskUser.length) * 100;
   }
-  if (status === "unauthenticated" || !userData?.clasess || !userData?.title) return router.push("/signin");
+  if (status === "unauthenticated") return router.push("/signin");
+
   if (status === "loading") return "Loading...";
   return (
     <>
