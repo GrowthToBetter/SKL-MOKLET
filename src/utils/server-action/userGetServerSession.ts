@@ -89,17 +89,6 @@ export const UpdateUserById = async (data: FormData) => {
         }
       );
       if (!update) throw new Error("Update failed");
-      if (email.includes("student")) {
-        const dataUpdateRole = new FormData();
-        dataUpdateRole.set("role", "SISWA");
-        const userUpdateRole = await updateRole(id, dataUpdateRole);
-        if (!userUpdateRole) throw new Error("Failed to create");
-      } else {
-        const dataUpdateRole = new FormData();
-        dataUpdateRole.set("role", "GURU");
-        const userUpdateRole = await updateRole(id, dataUpdateRole);
-        if (!userUpdateRole) throw new Error("Failed to create");
-      }
     } else {
       throw new Error("Email already exists");
     }
@@ -185,6 +174,7 @@ export const updateRole = async (id: string, data: FormData) => {
       throw new Error("eror");
     }
     revalidatePath("/admin/studentData");
+    revalidatePath("/pilihRole");
     return update;
   } catch (error) {
     throw new Error((error as Error).message);

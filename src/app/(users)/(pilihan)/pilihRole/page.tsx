@@ -38,7 +38,7 @@ export default function PilihKeahlian() {
       }
     };
     fetchUserData();
-  }, [session]);
+  }, [session, userData]);
   
   const handleRoleChangeClass = (userId: string, newClass: string) => {
     setSelectedClass((prev) => ({
