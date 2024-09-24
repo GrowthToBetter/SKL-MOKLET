@@ -28,15 +28,13 @@ export default function Signin() {
   useEffect(() => {
     if (session && userData) {
       setIsLoading(true);
-      if (userData.role === "UNDEFINED") {
+      if (!userData.title || !userData.clasess) {
         toast.success("Berhasil Login!");
-        router.push("/pilihRole");
-        setIsLoading(false);
-      } else if (["SISWA", "GURU", "ADMIN"].includes(userData.role)) {
+        router.push("/pilihRole")
+      } else if(userData.title && userData.clasess){
         toast.success("Berhasil Login!");
-        router.push("/profile");
-        setIsLoading(false);
-      } else {
+        router.push("/")
+      }else {
         toast.error("Maaf Login Gagal");
         setIsLoading(false);
       }

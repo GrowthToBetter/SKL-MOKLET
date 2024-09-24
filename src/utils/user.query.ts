@@ -5,26 +5,29 @@ import { userFullPayload } from "./relationsip";
 export const findAllUsers = async (filter?: Prisma.UserWhereInput) => {
   return await prisma.user.findMany({
     where: filter,
-    include: { userAuth: { select: { last_login: true } }, TaskUser:true, Teacher:true, Student:true, classTeacher:true, TaskTeacher:true},
+    include: { userAuth: { select: { last_login: true } }, TaskUser:true, Teacher:true, Student:true, TaskTeacher:true},
   });
 };
 
 export const findUser = async (filter: Prisma.UserWhereInput) => {
   return await prisma.user.findFirst({
     where: filter,
-    include: { userAuth: { select: { last_login: true } }, TaskUser:true, Teacher: true, Student:true, classTeacher:true, TaskTeacher:true},
+    include: { userAuth: { select: { last_login: true } }, TaskUser:true, Teacher: true, Student:true, TaskTeacher:true},
   });
 };
 
-export const findTaskList = async( filter: Prisma.taskListWhereInput)=>{
-  return await prisma.taskList.findMany({
-    where:filter
-  })
-}
 
 export const findUserAuth = async (email: string) => {
   return await prisma.userAuth.findUnique({ where: { userEmail: email } });
 };
+
+export const findAllTask=async(filter: Prisma.TaskWhereInput)=>{
+  return await prisma.task.findMany({
+    where:filter,
+    include:{user:true, task:true}
+  })
+}
+
 
 export const createUser = async (data: Prisma.UserUncheckedCreateInput) => {
   return await prisma.user.create({ data });

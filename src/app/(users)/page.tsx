@@ -51,7 +51,7 @@ export default function User(props: any) {
   if (tempDontVerif && userData?.TaskUser) {
     dontVerif = (tempDontVerif.length / userData.TaskUser.length) * 100;
   }
-  if (status === "unauthenticated") return router.push("/signin");
+  if (status === "unauthenticated" || !userData?.clasess || !userData?.title) return router.push("/signin");
   if (status === "loading") return "Loading...";
   return (
     <>
@@ -91,7 +91,7 @@ export default function User(props: any) {
           </h1>
           <div className="bg-white border-2 flex w-full border-highlight rounded-md p-5">
             {userData?.role == "SISWA" ? (
-              userData.Teacher.map((id, i) => <Hero userData={id} key={i} />)
+              <Hero userData={userData.Teacher} />
             ) : userData?.role == "GURU" ? (
               userData.Student.map((id, i) => <Hero userData={id} key={i} />)
             ) : (

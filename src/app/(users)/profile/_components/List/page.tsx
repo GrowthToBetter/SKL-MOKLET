@@ -32,7 +32,7 @@ export default function List(props: any) {
     };
     fetchUserData();
   }, [session, props]);
-  console.log(props.userData.classesTeacher);
+  console.log(props.userData);
   return (
     <>
     {session?.user?.role=="SISWA"? teacherData.map((teacher, i) => (
@@ -48,7 +48,7 @@ export default function List(props: any) {
                     {teacher.name} -{" "}
                     {teacher.clasess
                       ? teacher.clasess
-                      : "guru belum mengatur jenis pelajaran yang dia ampu"}
+                      : "guru belum mengatur jenis kelas yang dia ampu"}
                   </>
                 }
               </Link>
@@ -62,7 +62,7 @@ export default function List(props: any) {
             className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800"
           >
                 {props.userData
-                  ? props.userData.classesTeacher
+                  ? props.userData.title
                   : "anda belum mengatur kelas yang diampu"}
           </Link>
         </li>

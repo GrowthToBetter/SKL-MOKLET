@@ -12,13 +12,15 @@ model User {
   email         String        @unique
   photo_profile String?
   name          String
-  clasess       String?
+  clasess       Class?         
+  title         Title?
+  detail        Int?
   absent        String?
   Phone         String?
   NIS           String?
   NISN          String?
   schoolOrigin  String?
-  role          Role          @default(UNDEFINED)
+  role          Role          @default(SISWA)
   status        Status  @default(NOTGRADUATE)
   whatsapp      String?
   BirthDate     String?
@@ -28,16 +30,23 @@ model User {
   TaskUser      Task[]     @relation("Task_id")
   Sugestion     String?
   TaskTeacher   Task[]    @relation("task_teacher")
-  classTeacher   classTeacher[] @relation("teacherClass")
-  Teacher       User[]     @relation("teacherToStudent")
+  teacherId     String?
+  Teacher       User?     @relation("teacherToStudent", fields: [teacherId], references: [id])
   Student       User[]      @relation("teacherToStudent")
 }
 
-model classTeacher{
-  id         String    @id @default(uuid()) @map("class_teacher") @db.Char(36)
-  classesTeacher  String? 
-  user    User[] @relation("teacherClass")
+enum Class {
+  X
+  XI
+  XII
 }
+
+enum Title {
+  RPL
+  PG
+  TKJ
+}
+
 
 model UserAuth {
   id         String    @id @default(uuid()) @map("userauth_id") @db.Char(36)
@@ -49,20 +58,17 @@ model UserAuth {
 
 model Task{
   id          String          @id @default(uuid()) @map("task_id") @db.Char(36)
-  Task  String?
+  Task  String?    
   userId String?
   task User[] @relation("task_teacher")
   user User? @relation("Task_id", fields: [userId], references: [id])
   userAuthTask    Boolean       @default(false)     
   teacherAuth Boolean       @default(false)
+  classes   Class?
+  title     Title?
   status      RequestStatus   @default(PENDING)
 }
 
-
-model taskList {
-  id         String    @id @default(uuid()) @map("task_list") @db.Char(36)
-  task        String?
-} 
 
 enum Status {
   NOTGRADUATE
@@ -74,7 +80,6 @@ enum Role {
   SISWA
   GURU
   ADMIN
-  UNDEFINED
 }
 
 enum Gender {

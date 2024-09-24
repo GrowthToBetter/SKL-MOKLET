@@ -112,10 +112,9 @@ export default function Profile() {
                 : "List Kelas Yang Diampu"}
             </h2>
             <ul className="space-y-2">
-              {session?.user?.role=="SISWA" ? userData?.Teacher.map((user, i) => (
-                <List userData={user} key={i} />
-              )) : session?.user?.role=="GURU" ? userData?.classTeacher.map((user, i) => (
-                <List userData={user} key={i} />)) : ""}
+              {session?.user?.role=="SISWA" ? 
+                <List userData={userData?.Teacher} />
+              : session?.user?.role=="GURU" ? <List userData={userData?.classTeacher} />:""}
             </ul>
           </div>
 

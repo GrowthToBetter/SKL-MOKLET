@@ -8,8 +8,18 @@ export async function GET(req: Request) {
   const teacherId = url.searchParams.get("teacherId");
 
   if (!teacherId) {
-    return new NextResponse(JSON.stringify({ error: "User ID is required" }), {
-      status: 400,
+    const user = await findAllUsers({});
+    if (!user) {
+      return new NextResponse(JSON.stringify({ error: "User not found" }), {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    return new NextResponse(JSON.stringify({ user }), {
+      status: 200,
       headers: {
         "Content-Type": "application/json",
       },

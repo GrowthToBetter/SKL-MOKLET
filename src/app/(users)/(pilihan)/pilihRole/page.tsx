@@ -4,8 +4,8 @@ import Image from "next/image";
 import { FormButton } from "@/app/components/utils/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { updateRole, UpdateUserById } from "@/utils/server-action/userGetServerSession";
-import { Role, User } from "@prisma/client";
+import { updateIdentity, updateRole, UpdateUserById } from "@/utils/server-action/userGetServerSession";
+import { Class, Role, Title, User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { occupation } from "@/app/types/occupation";
 import toast from "react-hot-toast";
@@ -14,7 +14,8 @@ import { userFullPayload } from "@/utils/relationsip";
 
 export default function PilihKeahlian() {
   const { data: session, status } = useSession();
-  const [selectedRoles, setSelectedRoles] = useState<{ [key: string]: string }>({});
+  const [selectedClass, setSelectedClass] = useState<{ [key: string]: string }>({});
+  const [selectedSpecialist, setSelectedSpecialist] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userData, setUserData] = useState<userFullPayload | null>(null);
 
@@ -42,10 +43,16 @@ export default function PilihKeahlian() {
 
   if (status === "unauthenticated") router.push("/signin");
 
-  const handleRoleChange = (userId: string, newRole: string) => {
-    setSelectedRoles((prev) => ({
+  const handleRoleChangeClass = (userId: string, newClass: string) => {
+    setSelectedClass((prev) => ({
       ...prev,
-      [userId]: newRole, 
+      [userId]: newClass, 
+    }));
+  };
+  const handleRoleChangeSpecialist = (userId: string, newSpecialist: string) => {
+    setSelectedSpecialist((prev) => ({
+      ...prev,
+      [userId]: newSpecialist, 
     }));
   };
 
@@ -55,15 +62,23 @@ export default function PilihKeahlian() {
       const formData = new FormData(e.target as HTMLFormElement);
       const toastID = toast.loading("Loading ...");
 
-      for (const userId in selectedRoles) {
-        formData.set("role", selectedRoles[userId]); 
-        await updateRole(userId, formData);
+      for (const userId in selectedClass) {
+        formData.set("Class", selectedClass[userId]); 
+        console.log(userId)
       }
-
-      toast.success("Role updated successfully!", { id: toastID });
-      router.push("/profile");
+      for (const userId in selectedSpecialist) {
+        console.log(userId)
+        formData.set("Specialist", selectedSpecialist[userId]); 
+      }
+      if(userData?.id){
+        await updateIdentity(userData.id, formData);
+      }
+      toast.success("Identity updated successfully!", { id: toastID });
+      if(userData?.clasess && userData.title){
+        router.push("/profile");
+      }
     } catch (error) {
-      toast.error("Failed to update role!");
+      toast.error("Failed to update Identity!");
       throw new Error((error as Error).message);
     }
   };
@@ -78,22 +93,35 @@ export default function PilihKeahlian() {
             <p className="text-[20px] font-medium text-black opacity-70 -mt-2">Decide what you want to be</p>
             <form onSubmit={handleSubmit}>
             <div
-              className="flex items-center m-5 justify-between p-3 bg-white drop-shadow rounded-[12px]"
+              className="flex items-center w-fit m-5 justify-between p-3 bg-white drop-shadow rounded-[12px]"
             >
-              <p className="text-[10px] font-medium mx-5">{userData?.name}</p>
-              <p className="text-[10px] font-medium mx-5">{userData?.email}</p>
+              <p className="lg:text-lg text-md font-bold w-fit mx-5">{userData?.name}</p>
+              <p className="lg:text-lg text-md font-bold w-fit mx-5">{userData?.email}</p>
               <div className="flex items-center">
                 <DropDown
-                  label="Role"
-                  options={Object.values(Role).map((role) => ({
-                    label: role,
-                    value: role,
+                  label="Class"
+                  options={Object.values(Class).map((classes) => ({
+                    label: classes,
+                    value: classes,
                   }))}
-                  className="rounded-xl flex justify-center items-center bg-highlight text-black p-3 m-3"
-                  name={`role-${userData?.id}`}
-                  value={selectedRoles[userData?.id || 0] || userData?.role}
+                  className="rounded-xl flex justify-center items-center bg-moklet text-black p-3 m-3 font-bold"
+                  name={`classes`}
+                  value={selectedClass[userData?.id || 0] || (userData?.clasess||undefined)}
                   handleChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                    handleRoleChange((userData?.id || ""), e.target.value)
+                    handleRoleChangeClass((userData?.id || ""), e.target.value)
+                  }
+                />
+                <DropDown
+                  label="Specialist"
+                  options={Object.values(Title).map((special) => ({
+                    label: special,
+                    value: special,
+                  }))}
+                  className="rounded-xl flex justify-center items-center bg-moklet text-black p-3 m-3 font-bold"
+                  name={`specialist`}
+                  value={selectedSpecialist[userData?.id || 0] || (userData?.title||undefined)}
+                  handleChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                    handleRoleChangeSpecialist((userData?.id || ""), e.target.value)
                   }
                 />
               </div>

@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  Class,
   Gender,
   Prisma,
   Religion,
@@ -8,6 +9,7 @@ import {
   Role,
   Status,
   Task,
+  Title,
   User,
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
@@ -31,7 +33,7 @@ export const UpdateUserById = async (data: FormData) => {
     const photo_profile = data.get("photo_profile") as string;
     const name = data.get("name") as string;
     const role = data.get("role") as Role;
-    const clasess = data.get("clasess") as string;
+    const clasess = data.get("clasess") as Class;
     const absent = data.get("absent") as string;
     const Phone = data.get("Phone") as string;
     const NIS = data.get("NIS") as string;
@@ -63,7 +65,17 @@ export const UpdateUserById = async (data: FormData) => {
       const findUserWithId = await prisma.user.findUnique({
         where: { id },
       });
-
+      if(email.includes("student")){
+        const dataUpdateRole=new FormData();
+        dataUpdateRole.set("role","SISWA")
+        const userUpdateRole= await updateRole(id, dataUpdateRole)
+        if (!userUpdateRole) throw new Error("Failed to create");
+      } else{
+        const dataUpdateRole=new FormData();
+        dataUpdateRole.set("role","GURU")
+        const userUpdateRole= await updateRole(id, dataUpdateRole)
+        if (!userUpdateRole) throw new Error("Failed to create");
+      }
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
         {
@@ -94,10 +106,12 @@ export const UpdateUserById = async (data: FormData) => {
   }
 };
 
-export const UpdateTaskUserAuth = async (data: FormData, taskTeacherData: { connect: { id: string }[] }) => {
+export const UpdateTaskUserAuth = async (data: FormData, taskTeacherData: { connect: { id: string }[] }, userConnect: { connect: { id: string } }) => {
   const session = await nextGetServerSession();
   const Task = data.get("Task") as string;
-  const userId = data.get("user") as string;
+  const userId = userConnect.connect.id;
+  const classes= data.get("classes") as Class;
+  const title=data.get("title") as Title
   try {
     const create = await createTaskUser({
       Task,
@@ -105,7 +119,9 @@ export const UpdateTaskUserAuth = async (data: FormData, taskTeacherData: { conn
       task:taskTeacherData,
       teacherAuth:false,
       userAuthTask:false,
-      userId 
+      userId,
+      classes,
+      title
     });
     revalidatePath("/checklist")
     return create
@@ -113,6 +129,34 @@ export const UpdateTaskUserAuth = async (data: FormData, taskTeacherData: { conn
     throw new Error((error as Error).message)
   }
 };
+
+export const updateIdentity=async (id:string, data:FormData)=>{
+  try {
+    const session = await nextGetServerSession();
+    if (!session) {
+      throw new Error("eror");
+    }
+
+    const clasess = data.get("Class") as Class;
+    const Title = data.get("Specialist") as Title;
+    const update = await prisma.user.update({
+      where: { id: id },
+      data: {
+        clasess,
+        title:Title,
+      },
+    });
+    if (!update) {
+      throw new Error("eror");
+    }
+    revalidatePath("/admin/studentData");
+    revalidatePath("/checklist");
+    revalidatePath("/profile");
+    return update;
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
+}
 
 export const updateRole = async (id: string, data: FormData) => {
   try {
@@ -211,7 +255,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
     const photo_profile = data.get("photo_profile") as string;
     const name = data.get("name") as string;
     const role = data.get("role") as Role;
-    const clasess = data.get("clasess") as string;
+    const clasess = data.get("clasess") as Class;
     const absent = data.get("absent") as string;
     const Phone = data.get("Phone") as string;
     const NIS = data.get("NIS") as string;

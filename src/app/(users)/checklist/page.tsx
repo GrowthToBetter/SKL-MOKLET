@@ -13,7 +13,7 @@ import {
 import { DropDown, TextField } from "@/app/components/utils/Form";
 import { RequestStatus, Role } from "@prisma/client";
 import { FormButton } from "@/app/components/utils/Button";
-import ListTask from "./_components/ListTask/page";
+import ListTask from "../../(admin)/admin/components/ListTask/page";
 
 
 export default function Checklist() {
@@ -69,7 +69,6 @@ export default function Checklist() {
       if (normalizedTask?.userAuthTask && normalizedTask?.teacherAuth) {
         status = "VERIFIED";
       }
-      console.log(status)
       const toastID = toast.loading("Updating task...");
       let updateResult;
       if (userData?.role === "SISWA") {
@@ -89,7 +88,7 @@ export default function Checklist() {
       console.error(error);
     }
   };
-  if (status === "unauthenticated") return router.push("/signin");
+  if (status === "unauthenticated" || !userData?.clasess || !userData?.title) return router.push("/signin");
   if (status === "loading") return "Loading...";
   return (
     <div className="grid grid-cols-1 grid-rows-3 p-4 pt-36 gap-y-4">
@@ -140,6 +139,7 @@ export default function Checklist() {
                       )?.name
                     }
                   </p>
+                  
                   <span className="flex">
                     <h1 className="m-3">
                       Validate Siswa{" "}
@@ -171,11 +171,6 @@ export default function Checklist() {
       ) : (
         <p>No tasks available</p>
       )}
-      {userData?.role=="GURU"?
-      <ListTask userData={userData} student={userData.Student.map((student, i)=>(
-      student.id))}/>
-      :""
-    }
     </div>
   );
 }
