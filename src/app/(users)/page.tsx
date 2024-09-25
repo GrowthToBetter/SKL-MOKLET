@@ -9,7 +9,7 @@ import { userFullPayload } from "@/utils/relationsip";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";
 import Image from "next/image";
-import Image1 from "@/../public/img/ImageHome1.png";
+import banner from "@/../public/img/imageHome1.png";
 import { FormButton } from "../components/utils/Button";
 import { fetcher } from "@/utils/server-action/Fetcher";
 import useSWR from "swr";
@@ -82,7 +82,7 @@ export default function User(props: any) {
            Ut dignissimos vitae quidem reprehenderit voluptate asperiores cum quam ex iure aperiam.</p>
       </div>
       <div className="flex w-1/2 justify-center items-center flex-col">
-      <Image src={Image1} alt="banner" className="lg:w-2/4 w-full h-fit" />
+      <Image src={banner} alt="banner" className="lg:w-2/4 w-full h-fit" />
       <FormButton variant="base" type="button" className="hover:bg-moklet hover:text-white m-3" onClick={()=>{router.push("/signin")}}>
         Get Started
       </FormButton>
