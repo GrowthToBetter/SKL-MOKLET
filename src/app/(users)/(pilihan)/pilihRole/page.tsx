@@ -4,7 +4,7 @@ import Image from "next/image";
 import { FormButton } from "@/app/components/utils/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { updateIdentity, updateRole, updateTeacherOnUser, UpdateUserById } from "@/utils/server-action/userGetServerSession";
+import { updateIdentity, updateRole, UpdateTaskUserAuth, updateTeacherOnUser, UpdateUserById } from "@/utils/server-action/userGetServerSession";
 import { Class, Role, Title, User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { occupation } from "@/app/types/occupation";
@@ -13,6 +13,7 @@ import { DropDown } from "@/app/components/utils/Form";
 import { userFullPayload } from "@/utils/relationsip";
 import useSWR from "swr";
 import { fetcher } from "@/utils/server-action/Fetcher";
+import { createTaskUser, UpdateTaskUser } from "@/utils/user.query";
 
 export default function PilihKeahlian() {
   const { data: session, status } = useSession();
@@ -76,12 +77,30 @@ export default function PilihKeahlian() {
         const {user}=data
         const titleUser=formData.get("Specialist")
         const classUSer=formData.get("Class")
+        let TaskName:any=[];
         const  filteredAllTeacher=user.filter((user:userFullPayload)=>user.role==="GURU" && user.title==titleUser && user.clasess==classUSer);
         for(const teacher of filteredAllTeacher){
           await updateTeacherOnUser(userData.id, teacher.id);
+          for(const Task of teacher.TaskTeacher){
+            if(!TaskName.includes(Task.Task)){
+              TaskName.push(Task.Task)
+            }
+          }
+          for(const Task of TaskName){
+            const formData= new FormData();
+            formData.set("Task", Task)
+            formData.set("classes", classUSer as string)
+            formData.set("title", titleUser as string)
+            let taskTeacherData = {
+              connect: [{ id: teacher.id }],
+            };
+            let userConnection = {
+              connect: { id: userData?.id },
+            };
+            await UpdateTaskUserAuth(formData, taskTeacherData, userConnection)
+          }
         }
-        console.log(filteredAllTeacher)
-        // router.push("/profile");
+        router.push("/profile");
       }
       toast.success("Identity updated successfully!", { id: toastID });
       

@@ -161,6 +161,8 @@ export const updateIdentity = async (id: string, data: FormData) => {
     throw new Error((error as Error).message);
   }
 };
+
+
 export const updateTeacherOnUser = async (id: string, teacherId:string) => {
   try {
     const session = await nextGetServerSession();
