@@ -107,13 +107,12 @@ export const authOptions: AuthOptions = {
 
         if (user.email) {
           const userDatabase = await findUser({ email: user.email });
-          const emailList=user.email.split("@");
           if (!userDatabase) {
             await createUser({
               email: user.email,
               photo_profile: user.image || "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png",
               name: user.name || "",
-              role: emailList.includes("student")? "SISWA":"GURU",
+              role: user.email.includes("student")? "SISWA":"GURU",
               userAuth: {
                 create: {
                   last_login: new Date(),

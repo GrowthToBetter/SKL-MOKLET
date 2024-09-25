@@ -40,7 +40,6 @@ export default function ListTask(props:any) {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast.loading("Loading...");
     try {
       const formData = new FormData(e.target as HTMLFormElement);
       const TaskString = formData.get("Task") as string;
@@ -48,24 +47,24 @@ export default function ListTask(props:any) {
       const title=formData.get("title") as Title;
       const filteredTeacher = props.teacherData.filter((teacher: userFullPayload) => 
         teacher.clasess?.toLowerCase() === classes.toLowerCase() && 
-        teacher.title?.toLowerCase() === title.toLowerCase()
-      );      
-      for (const teacher of props.teacherData ?? []) {
-        let taskTeacherData = {
-          connect: [{ id: teacher.id }],
-        };
+      teacher.title?.toLowerCase() === title.toLowerCase()
+    );      
+    for (const teacher of props.teacherData ?? []) {
+      let taskTeacherData = {
+        connect: [{ id: teacher.id }],
+      };
         console.log(teacher.Student)
         for(const student of teacher.Student){
           let userConnection = {
             connect: { id: student.id },
           };
           formData.set("Task", TaskString);
+          toast.loading("Loading...");
           await UpdateTaskUserAuth(formData, taskTeacherData, userConnection);
         }
       }
       setModal(false);
-      toast.dismiss();
-      return toast.success("Task updated successfully!");
+      toast.success("Task updated successfully!");
     } catch (error) {
       throw new Error((error as Error).message);
     }

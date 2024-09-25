@@ -4,13 +4,15 @@ import Image from "next/image";
 import { FormButton } from "@/app/components/utils/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { updateIdentity, updateRole, UpdateUserById } from "@/utils/server-action/userGetServerSession";
+import { updateIdentity, updateRole, updateTeacherOnUser, UpdateUserById } from "@/utils/server-action/userGetServerSession";
 import { Class, Role, Title, User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { occupation } from "@/app/types/occupation";
 import toast from "react-hot-toast";
 import { DropDown } from "@/app/components/utils/Form";
 import { userFullPayload } from "@/utils/relationsip";
+import useSWR from "swr";
+import { fetcher } from "@/utils/server-action/Fetcher";
 
 export default function PilihKeahlian() {
   const { data: session, status } = useSession();
@@ -19,6 +21,9 @@ export default function PilihKeahlian() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userData, setUserData] = useState<userFullPayload | null>(null);
 
+  const { data, error } = useSWR(`/api/teacher`, fetcher, {
+    refreshInterval: 1000,
+  });
   const router = useRouter();
 
   useEffect(() => {
@@ -62,15 +67,21 @@ export default function PilihKeahlian() {
 
       for (const userId in selectedClass) {
         formData.set("Class", selectedClass[userId]); 
-        console.log(userId)
       }
       for (const userId in selectedSpecialist) {
-        console.log(userId)
         formData.set("Specialist", selectedSpecialist[userId]); 
       }
       if(userData?.id){
         await updateIdentity(userData.id, formData);
-        router.push("/profile");;
+        const {user}=data
+        const titleUser=formData.get("Specialist")
+        const classUSer=formData.get("Class")
+        const  filteredAllTeacher=user.filter((user:userFullPayload)=>user.role==="GURU" && user.title==titleUser && user.clasess==classUSer);
+        for(const teacher of filteredAllTeacher){
+          await updateTeacherOnUser(userData.id, teacher.id);
+        }
+        console.log(filteredAllTeacher)
+        // router.push("/profile");
       }
       toast.success("Identity updated successfully!", { id: toastID });
       

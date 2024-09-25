@@ -44,11 +44,11 @@ export default async function App() {
     try {
       const user = users.find((user) => user.email === formData.email);
       if (user) {
+        const toastId = toast.loading("loading...");
         await updateUser(
           { email: formData.email },
           { role: formData.newRole as Role }
         );
-        const toastId = toast.loading("loading...");
         setSuccess("User role updated successfully");
         toast.success("User role updated successfully", { id: toastId });
       } else {

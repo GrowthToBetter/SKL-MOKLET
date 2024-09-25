@@ -32,7 +32,6 @@ export default function List(props: any) {
     };
     fetchUserData();
   }, [session, props]);
-  console.log(props.userData);
   return (
     <>
     {session?.user?.role=="SISWA"? teacherData.map((teacher, i) => (

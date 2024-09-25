@@ -121,6 +121,9 @@ export const UpdateTaskUserAuth = async (
       title,
     });
     revalidatePath("/checklist");
+    revalidatePath("/api/data");
+    revalidatePath("/api/teacher");
+    revalidatePath("/api/user");
     return create;
   } catch (error) {
     throw new Error((error as Error).message);
@@ -150,6 +153,40 @@ export const updateIdentity = async (id: string, data: FormData) => {
     revalidatePath("/checklist");
     revalidatePath("/profile");
     revalidatePath("/signin");
+    revalidatePath("/api/teacher");
+    revalidatePath("/api/data");
+    revalidatePath("/api/siswa");
+    return update;
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
+};
+export const updateTeacherOnUser = async (id: string, teacherId:string) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session) {
+      throw new Error("eror");
+    }
+    const update = await prisma.user.update({
+      where: { id: id },
+      data: {
+        Teacher:{
+          connect:{
+            id:teacherId
+          }
+        }
+      },
+    });
+    if (!update) {
+      throw new Error("eror");
+    }
+    revalidatePath("/admin/studentData");
+    revalidatePath("/checklist");
+    revalidatePath("/profile");
+    revalidatePath("/signin");
+    revalidatePath("/api/teacher");
+    revalidatePath("/api/data");
+    revalidatePath("/api/siswa");
     return update;
   } catch (error) {
     throw new Error((error as Error).message);
