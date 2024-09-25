@@ -8,11 +8,20 @@ import Hero from "./_components/Hero/page";
 import { userFullPayload } from "@/utils/relationsip";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";
+import Image from "next/image";
+import Image1 from "@/../public/img/ImageHome1.png";
+import { FormButton } from "../components/utils/Button";
+import { fetcher } from "@/utils/server-action/Fetcher";
+import useSWR from "swr";
+
 
 export default function User(props: any) {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<userFullPayload | null>(null);
   const [taskAuths, setTaskAuths] = useState<{ [key: string]: { userAuthTask: boolean; teacherAuth: boolean } }>({});
+  const { data, error } = useSWR(`/api/teacher`, fetcher, {
+    refreshInterval: 1000,
+  });
   const router= useRouter();
   useEffect(() => {
     const fetchUserData = async () => {
@@ -52,11 +61,47 @@ export default function User(props: any) {
   if (tempDontVerif && userData?.TaskUser) {
     dontVerif = (tempDontVerif.length / userData.TaskUser.length) * 100;
   }
-  if (status === "unauthenticated") return router.push("/signin");
-
+  let ListTeacher;
+  if(data){
+    const {user}=data;
+    ListTeacher=user.filter((user:userFullPayload)=>user.role==="GURU")
+  }
   if (status === "loading") return "Loading...";
   return (
     <>
+    {status==="unauthenticated"?
+    <div className="bg-[#EDE5E5]">
+    <div className="mt-[100px] p-5 max-w m-10 flex flex-row justify-center">
+      <div className="lg:w-1/2 w-full">
+        <h1 className="font-bold text-3xl">SKL</h1>
+        <p className="mt-0 mb-5 font-extralight">Syarat Ketentuan Lulus</p>
+        <p className="lg:font-medium font-normal lg:text-base text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. At, maiores. Facere animi numquam ad itaque, 
+          sint excepturi sequi. Quo vitae veniam vero eaque. Recusandae optio totam quas dolorem soluta repellendus.
+          Eius, molestias quae? Soluta veniam, fugiat suscipit cum cupiditate obcaecati.
+           Ut dignissimos vitae quidem reprehenderit voluptate asperiores cum quam ex iure aperiam.</p>
+      </div>
+      <div className="flex w-1/2 justify-center items-center flex-col">
+      <Image src={Image1} alt="banner" className="lg:w-2/4 w-full h-fit" />
+      <FormButton variant="base" type="button" className="hover:bg-moklet hover:text-white m-3" onClick={()=>{router.push("/signin")}}>
+        Get Started
+      </FormButton>
+      </div>
+    </div>
+    <div className="p-5 w-full flex flex-col flex-wrap justify-center h-[30rem] bg-highlight-2  overflow-auto">
+      <h1 className="font-bold text-xl m-10 text-white">Guru Yang Terdaftar</h1>
+      <div className="flex flex-row">
+      {ListTeacher ? (ListTeacher.map((user:userFullPayload, i:React.Key)=>(
+        <>
+        <div className=" flex items-center bg-white p-3 rounded-lg m-10 w-[12rem] h-[3rem] md:w-[20rem] md:h-[8rem]" key={i}>
+        <Image src={user.photo_profile as string} alt="photo guru" width={100} height={100} className="m-3 w-1/4 rounded-full" />
+        <p className="font-normal md:font-semibold text-[0.6rem] md:text-lg">{user.name}</p>
+        </div>
+        </>
+      ))): <div>Loading ...</div>}
+      </div>
+    </div>
+    </div>:
       <div className="mt-[100px] p-5 max-w m-10 flex justify-center flex-col">
         <h1 className="font-semibold text-xl text-highlight p-3">
           Welcome back, {session?.user ? session?.user?.name : "user"}!
@@ -87,7 +132,7 @@ export default function User(props: any) {
         ) : (
           ""
         )}
-        <div className="bg-moklet lg:w-full rounded-xl p-3 m-5">
+        <div className="bg-moklet lg:w-[40rem] rounded-xl p-3 m-5">
           <h1 className="font-bold text-lg m-3 text-white">
             Evaluasi Kompetensi
           </h1>
@@ -102,6 +147,7 @@ export default function User(props: any) {
           </div>
         </div>
       </div>
+  }
     </>
   );
 }

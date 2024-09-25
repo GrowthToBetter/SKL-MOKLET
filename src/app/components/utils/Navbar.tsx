@@ -118,20 +118,10 @@ export default function Navbar() {
                       <Link
                         href="/"
                         className={`${
-                          pathName === "/" ? "text-red-400" : "text-black"
-                        } rounded md:bg-transparent hover:text-red-600`}
+                          pathName === "/" ? "text-red-400 border-2 border-highlight" : "text-black"
+                        } rounded-md md:bg-transparent hover:text-red-600 hover:border-2 p-2 hover:border-highlight`}
                       >
                         Home
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="/Evaluasi"
-                        className={`${
-                          pathName === "/Evaluasi" ? "text-red-400" : "text-black"
-                        } rounded md:bg-transparent hover:text-red-600`}
-                      >
-                        Evaluasi
                       </Link>
                     </li>
                     <li>
@@ -139,9 +129,9 @@ export default function Navbar() {
                         href="/partner"
                         className={`${
                           pathName === "/partner"
-                            ? "text-red-400"
+                            ? "text-red-400 border-2 border-highlight"
                             : "text-black"
-                        } rounded md:hover:bg-transparent hover:text-red-600`}
+                        } rounded-md md:hover:bg-transparent hover:text-red-600 hover:border-2 p-2 hover:border-highlight`}
                       >
                         Checklist
                       </Link>
@@ -151,9 +141,9 @@ export default function Navbar() {
                         href="/pengembang"
                         className={`${
                           pathName === "/pengembang"
-                            ? "text-red-400"
+                            ? "text-red-400 border-2 border-highlight"
                             : "text-black"
-                        } rounded md:hover:bg-transparent hover:text-red-600`}
+                        } rounded-md md:hover:bg-transparent hover:text-red-600 hover:border-2 p-2 hover:border-highlight`}
                       >
                         Developers
                       </Link>
@@ -169,13 +159,13 @@ export default function Navbar() {
             className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
             id="navbar-sticky"
           >
-            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 opacity-80">
+            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-md-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 opacity-80">
               <li>
                 <Link
                   href="/"
                   className={`${
-                    pathName === "/" ? "text-highlight" : "text-white"
-                  } rounded md:bg-transparent hover:text-highlight duration-500`}
+                    pathName === "/" ? "text-highlight border-2 border-highlight" : "text-white"
+                  } rounded-md md:bg-transparent hover:text-highlight duration-500 hover:border-2 p-2 hover:border-highlight`}
                 >
                   Home
                 </Link>
@@ -184,8 +174,8 @@ export default function Navbar() {
                 <Link
                   href="/checklist"
                   className={`${
-                    pathName === "/checklist" ? "text-highlight" : "text-white"
-                  } rounded md:hover:bg-transparent hover:text-highlight duration-500`}
+                    pathName === "/checklist" ? "text-highlight border-2 border-highlight" : "text-white"
+                  } rounded-md md:hover:bg-transparent hover:text-highlight duration-500 hover:border-2 p-2 hover:border-highlight`}
                 >
                   Checklist
                 </Link>
@@ -194,8 +184,8 @@ export default function Navbar() {
                 <Link
                   href="/pengembang"
                   className={`${
-                    pathName === "/pengembang" ? "text-highlight" : "text-white"
-                  } rounded md:hover:bg-transparent hover:text-highlight duration-500`}
+                    pathName === "/pengembang" ? "text-highlight border-2 border-highlight" : "text-white"
+                  } rounded-md md:hover:bg-transparent hover:text-highlight duration-500 hover:border-2 p-2 hover:border-highlight`}
                 >
                   Developers
                 </Link>
