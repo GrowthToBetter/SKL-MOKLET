@@ -26,6 +26,8 @@ export default function Profile() {
   const [modal, setModal] = useState(false);
   const [selectedClass, setSelectedClass] = useState<{ [key: string]: string }>({});
   const [selectedSpecialist, setSelectedSpecialist] = useState<{ [key: string]: string }>({});
+  const [SelectedDetail, setSelectedDetail] = useState<{ [key: string]: string }>({});
+  let Number = [];
   useEffect(() => {
     const fetchUserData = async () => {
       if (session) {
@@ -57,9 +59,18 @@ export default function Profile() {
       [userId]: newSpecialist, 
     }));
   };
+  const handleRoleChangeDetail = (userId: string, newDetail: string) => {
+    setSelectedDetail((prev) => ({
+      ...prev,
+      [userId]: newDetail, 
+    }));
+  };
   const handleModal = () => {
     setModal(!modal);
   };
+  for(let i=1; i<=(userData?.title==="RPL"?8:userData?.title==="TKJ"?5:2);i++){
+    Number.push(`${i}`)
+  }
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
 
@@ -218,11 +229,27 @@ export default function Profile() {
               />
               <TextField
                 type="text"
-                label="No. Rank"
+                label="Absent"
                 name="absent"
                 defaultValue={userData?.absent as string}
               />
               </>)}
+              {userData?.role==="SISWA"?
+              <DropDown
+              label="Class Detail"
+              options={Number.map((i) => ({
+                label: (userData?.title+i),
+                value: i,
+              }))}
+              className="rounded-xl flex justify-center items-center bg-moklet text-black p-3 m-3 font-bold"
+              name={`classDetail`}
+              value={SelectedDetail[userData?.id || 0] || (userData?.ClassNumber||undefined)}
+              handleChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                handleRoleChangeDetail((userData?.id || ""), e.target.value)
+              }
+            />:""
+              
+            }
               
               <TextField
                 type="text"
@@ -230,6 +257,7 @@ export default function Profile() {
                 name="Phone"
                 defaultValue={userData?.Phone as string}
               />
+              
               <TextField
                 type="date"
                 label="Birth Date"

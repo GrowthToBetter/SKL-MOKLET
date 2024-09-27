@@ -8,11 +8,11 @@ datasource db {
 }
 
 model User {
-  id            String        @id @default(uuid()) @map("user_id") @db.Char(36)
-  email         String        @unique
+  id            String    @id @default(uuid()) @map("user_id") @db.Char(36)
+  email         String    @unique
   photo_profile String?
   name          String
-  clasess       Class?         
+  clasess       Class?
   title         Title?
   detail        Int?
   absent        String?
@@ -20,19 +20,20 @@ model User {
   NIS           String?
   NISN          String?
   schoolOrigin  String?
-  role          Role          @default(SISWA)
-  status        Status  @default(NOTGRADUATE)
+  role          Role      @default(SISWA)
+  status        Status    @default(NOTGRADUATE)
   whatsapp      String?
   BirthDate     String?
-  religion      Religion?     @default(Islam)
-  gender        Gender?       @default(Male)
+  religion      Religion? @default(Islam)
+  gender        Gender?   @default(Male)
   userAuth      UserAuth?
-  TaskUser      Task[]     @relation("Task_id")
+  TaskUser      Task[]    @relation("Task_id")
   Sugestion     String?
   TaskTeacher   Task[]    @relation("task_teacher")
   teacherId     String?
+  ClassNumber   String?
   Teacher       User?     @relation("teacherToStudent", fields: [teacherId], references: [id])
-  Student       User[]      @relation("teacherToStudent")
+  Student       User[]    @relation("teacherToStudent")
 }
 
 enum Class {
@@ -47,7 +48,6 @@ enum Title {
   TKJ
 }
 
-
 model UserAuth {
   id         String    @id @default(uuid()) @map("userauth_id") @db.Char(36)
   password   String?
@@ -56,25 +56,31 @@ model UserAuth {
   user       User      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
 }
 
-model Task{
-  id          String          @id @default(uuid()) @map("task_id") @db.Char(36)
-  Task  String?    
-  userId String?
-  task User[] @relation("task_teacher")
-  user User? @relation("Task_id", fields: [userId], references: [id])
-  userAuthTask    Boolean       @default(false)     
-  teacherAuth Boolean       @default(false)
-  classes   Class?
-  title     Title?
-  status      RequestStatus   @default(PENDING)
+model Task {
+  id           String        @id @default(uuid()) @map("task_id") @db.Char(36)
+  Task         String?
+  DetailTask   Detail[]      @relation("TaskDetail")
+  userId       String?
+  task         User[]        @relation("task_teacher")
+  user         User?         @relation("Task_id", fields: [userId], references: [id])
+  userAuthTask Boolean       @default(false)
+  teacherAuth  Boolean       @default(false)
+  classes      Class?
+  title        Title?
+  status       RequestStatus @default(PENDING)
 }
 
+model Detail {
+  id     String  @id @default(uuid()) @map("task_id") @db.Char(36)
+  Detail String?
+  idTask String?
+  Task   Task?    @relation("TaskDetail", fields: [idTask], references: [id])
+}
 
 enum Status {
   NOTGRADUATE
   GRADUATE
 }
-
 
 enum Role {
   SISWA

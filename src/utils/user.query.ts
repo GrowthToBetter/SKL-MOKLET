@@ -1,18 +1,18 @@
 import { Task, Prisma, RequestStatus } from "@prisma/client";
 import prisma from "./../lib/prisma";
-import { userFullPayload } from "./relationsip";
+
 
 export const findAllUsers = async (filter?: Prisma.UserWhereInput) => {
   return await prisma.user.findMany({
     where: filter,
-    include: { userAuth: { select: { last_login: true } }, TaskUser:true, Teacher:true, Student:true, TaskTeacher:true},
+    include: { userAuth: { select: { last_login: true } }, TaskUser:{include:{DetailTask:true}}, Teacher:true, Student:true, TaskTeacher:{include:{DetailTask:true}}},
   });
 };
 
 export const findUser = async (filter: Prisma.UserWhereInput) => {
   return await prisma.user.findFirst({
     where: filter,
-    include: { userAuth: { select: { last_login: true } }, TaskUser:true, Teacher: true, Student:true, TaskTeacher:true},
+    include: { userAuth: { select: { last_login: true } }, TaskUser:{include:{DetailTask:true}}, Teacher: true, Student:true, TaskTeacher:{include:{DetailTask:true}}},
   });
 };
 
@@ -36,9 +36,14 @@ export const createTaskUser = async (data: Prisma.TaskUncheckedCreateInput) => {
   return await prisma.task.create({ data });
 };
 
+export const createDetailUser=async(data:Prisma.DetailUncheckedCreateInput)=>{
+  return await prisma.detail.create({ data });
+}
+
 export const UpdateTaskUser=async (where:Prisma.TaskWhereUniqueInput, update:Prisma.TaskUncheckedUpdateInput)=>{
   return await prisma.task.update({ where, data:update });
 }
+
 
 export const updateUser = async (where: Prisma.UserWhereUniqueInput, update: Prisma.UserUncheckedUpdateInput) => {
   return await prisma.user.update({ where, data: update });

@@ -3,7 +3,7 @@ import React from "react";
 export default function Pengembang() {
   const developers = [
     { job: "General Manager", name: "Muhammad Chusni Agus, M.Pd., Gr." },
-    { job: "Project Manager ", name: "Jean Richnerd Rantabaratrahjaga" },
+    { job: "Project Manager and Fullstack Developer", name: "Jean Richnerd Rantabaratrahjaga" },
     { job: "Software Architect ", name: "Shabri Sebastian Siregar" },
     { job: "UI/UX Designer ", name: "Mahija Abyudaya" },
   ];

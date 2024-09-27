@@ -14,6 +14,7 @@ import {
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import {
+  createDetailUser,
   createTaskUser,
   createUser,
   findTaskIdWithName,
@@ -109,6 +110,7 @@ export const UpdateTaskUserAuth = async (
   const userId = userConnect.connect.id;
   const classes = data.get("classes") as Class;
   const title = data.get("title") as Title;
+  const Detail = data.get("Detail") as string;
   try {
     const create = await createTaskUser({
       Task,
@@ -120,15 +122,24 @@ export const UpdateTaskUserAuth = async (
       classes,
       title,
     });
-    revalidatePath("/checklist");
-    revalidatePath("/api/data");
-    revalidatePath("/api/teacher");
-    revalidatePath("/api/user");
-    return create;
+    if (create.id) {
+      const createDetail = await createDetailUser({
+        Detail,
+        idTask: create.id
+      });
+      revalidatePath("/checklist");
+      revalidatePath("/api/data");
+      revalidatePath("/api/teacher");
+      revalidatePath("/api/user");
+      return { task: create, detail: createDetail };
+    } else {
+      throw new Error("Failed to create task");
+    }
   } catch (error) {
     throw new Error((error as Error).message);
   }
 };
+
 
 export const updateIdentity = async (id: string, data: FormData) => {
   try {
@@ -157,6 +168,23 @@ export const updateIdentity = async (id: string, data: FormData) => {
     revalidatePath("/api/data");
     revalidatePath("/api/siswa");
     return update;
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
+};
+
+export const updateUserDetailTask=async(Detail:string,  TaskConnect: { connect: { id: string } })=>{
+  const idTask=TaskConnect.connect.id;
+  try {
+    const create = await createDetailUser({
+      Detail,
+      idTask,
+    });
+    revalidatePath("/checklist");
+    revalidatePath("/api/data");
+    revalidatePath("/api/teacher");
+    revalidatePath("/api/user");
+    return create;
   } catch (error) {
     throw new Error((error as Error).message);
   }
@@ -296,6 +324,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
     const clasess = data.get("clasess") as Class;
     const absent = data.get("absent") as string;
     const Phone = data.get("Phone") as string;
+    const ClassNumber= data.get("classDetail") as string;
     const NIS = data.get("NIS") as string;
     const NISN = data.get("NISN") as string;
     const schoolOrigin = data.get("schoolOrigin") as string;
@@ -314,6 +343,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
         absent,
         NIS,
         NISN,
+        ClassNumber,
         Phone,
         schoolOrigin,
         status,
@@ -334,6 +364,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
           name: name ?? findUserWithId?.name,
           absent: absent ?? findUserWithId?.absent,
           clasess: clasess ?? findUserWithId?.clasess,
+          ClassNumber: ClassNumber??findUserWithId?.ClassNumber,
           NIS: NIS ?? findUserWithId?.NIS,
           NISN: NISN ?? findUserWithId?.NISN,
           schoolOrigin: schoolOrigin ?? findUserWithId?.schoolOrigin,

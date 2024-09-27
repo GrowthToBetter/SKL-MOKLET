@@ -71,7 +71,7 @@ export default async function AdminPage() {
           </div>
         </section>
       </section>
-      <button className="w-[100px] h-[100px] text-white text-lg font-medium text-center items-center flex justify-center rounded-full fixed z-[10000] right-10 bottom-10 bg-[#F45846]"> add </button>
+      
     </div>
   );
 }
