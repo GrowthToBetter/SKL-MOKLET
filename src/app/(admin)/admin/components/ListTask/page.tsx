@@ -1,6 +1,6 @@
 "use client";
 
-import { userFullPayload } from "@/utils/relationsip";
+import { teacherFullPayload, userFullPayload } from "@/utils/relationsip";
 import { useSession } from "next-auth/react";
 import { FormEvent, useEffect, useState } from "react";
 import { FormButton } from "@/app/components/utils/Button";
@@ -73,8 +73,10 @@ export default function ListTask(props: any) {
       
       const toastID = toast.loading("Loading...");
       let updateResult = false;
-      // filter guru yang mendapat task, sesuai kelas jurusannya{}
-      for (const teacher of props.teacherData ?? []) {
+      const filteredTeachers = props.teacherData.filter((teacher: { title: Title; classes:Class}) => 
+        teacher.title === title && classes===classes
+      )
+      for (const teacher of filteredTeachers ?? []) {
         const taskTeacherData = {
           connect: [{ id: teacher.id }],
         };

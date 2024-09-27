@@ -62,7 +62,7 @@ model Task {
   DetailTask   Detail[]      @relation("TaskDetail")
   userId       String?
   task         User[]        @relation("task_teacher")
-  user         User?         @relation("Task_id", fields: [userId], references: [id])
+  user         User?         @relation("Task_id", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userAuthTask Boolean       @default(false)
   teacherAuth  Boolean       @default(false)
   classes      Class?
@@ -74,7 +74,7 @@ model Detail {
   id     String  @id @default(uuid()) @map("task_id") @db.Char(36)
   Detail String?
   idTask String?
-  Task   Task?    @relation("TaskDetail", fields: [idTask], references: [id])
+  Task   Task?    @relation("TaskDetail", fields: [idTask], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 enum Status {
