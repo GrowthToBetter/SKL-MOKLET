@@ -114,10 +114,7 @@ export const UpdateTaskUserAuth = async (
   try {
     const create = await createTaskUser({
       Task,
-      status: "PENDING",
       task: taskTeacherData,
-      teacherAuth: false,
-      userAuthTask: false,
       userId,
       classes,
       title,
@@ -125,7 +122,10 @@ export const UpdateTaskUserAuth = async (
     if (create.id) {
       const createDetail = await createDetailUser({
         Detail,
-        idTask: create.id
+        idTask: create.id,
+        status:"PENDING",
+        teacherAuth:false,
+        userAuthTask:false
       });
       revalidatePath("/checklist");
       revalidatePath("/api/data");
@@ -179,6 +179,9 @@ export const updateUserDetailTask=async(Detail:string,  TaskConnect: { connect: 
     const create = await createDetailUser({
       Detail,
       idTask,
+      status:"PENDING",
+      teacherAuth:false,
+      userAuthTask:false
     });
     revalidatePath("/checklist");
     revalidatePath("/api/data");
@@ -250,7 +253,7 @@ export const updateRole = async (id: string, data: FormData) => {
 
 export const UpdateTaskUser = async (
   status: RequestStatus,
-  taskId: string,
+  detailId: string,
   data: FormData
 ) => {
   try {
@@ -260,8 +263,8 @@ export const UpdateTaskUser = async (
     }
     const userAuthTask = data.get("userAuthTask") === "on";
 
-    const update = await prisma.task.update({
-      where: { id: taskId },
+    const update = await prisma.detail.update({
+      where: { id: detailId },
       data: {
         userAuthTask: userAuthTask,
         status,
@@ -279,9 +282,11 @@ export const UpdateTaskUser = async (
     throw new Error((err as Error).message);
   }
 };
+
+
 export const UpdateTaskTeacher = async (
   status: RequestStatus,
-  taskId: string,
+  detailId: string,
   data: FormData
 ) => {
   try {
@@ -291,8 +296,8 @@ export const UpdateTaskTeacher = async (
     }
     const teacherAuth = data.get("teacherAuth") === "on";
 
-    const update = await prisma.task.update({
-      where: { id: taskId },
+    const update = await prisma.detail.update({
+      where: { id: detailId },
       data: {
         teacherAuth: teacherAuth,
         status,
@@ -310,6 +315,7 @@ export const UpdateTaskTeacher = async (
     throw new Error((err as Error).message);
   }
 };
+
 
 export const UpdateGeneralProfileById = async (data: FormData) => {
   try {
