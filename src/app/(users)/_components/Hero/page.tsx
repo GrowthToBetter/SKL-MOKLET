@@ -36,7 +36,7 @@ export default function Hero(props: any) {
     fetchUserData();
   }, [session, props]);
   return (
-    <div className="grid lg:grid-rows-2 grid-rows-1 gap-2 bg-white rounded-xl p-8 mt-4">
+    <div className="md:grid flex flex-col lg:grid-rows-2 md:grid-rows-1 gap-2 bg-white rounded-xl p-8 mt-4">
       {teacherData?.length != 0 ? (
         teacherData?.map((user, i) => (
           <>

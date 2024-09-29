@@ -157,12 +157,12 @@ export default function User(props: any) {
             <h1 className="font-bold text-xl text-white">
               Guru Yang Terdaftar
             </h1>
-            <div className="flex flex-row">
+            <div className="grid lg:grid-rows-2 md:grid-cols-2 grid-cols-1 md:grid-rows-4 lg:grid-cols-4 gap-2">
               {ListTeacher ? (
                 ListTeacher.map((user: userFullPayload, i: React.Key) => (
                   <>
                     <div
-                      className=" flex items-center bg-white p-3 rounded-lg m-3 w-fit h-1/2 md:w-[20rem] md:h-[8rem]"
+                      className=" flex items-center bg-white p-5 rounded-lg m-3 w-[15rem] h-1/2 md:w-[20rem] md:h-[8rem]"
                       key={i}
                     >
                       <Image
@@ -172,7 +172,7 @@ export default function User(props: any) {
                         height={100}
                         className="m-3 w-1/4 rounded-full"
                       />
-                      <p className="font-normal md:font-semibold text-[0.6rem] md:text-lg">
+                      <p className="font-normal md:font-semibold p-2 text-[0.6rem] md:text-lg">
                         {user.name}
                       </p>
                     </div>
@@ -227,7 +227,7 @@ export default function User(props: any) {
             <h1 className="font-bold text-lg m-3 text-white">
               Evaluasi Kompetensi
             </h1>
-            <div className="bg-white border-2 flex w-full border-highlight rounded-md p-5">
+            <div className="bg-white border-2 flex w-full border-highlight rounded-md p-0 md:p-5">
               {userData?.role == "SISWA" ? (
                 <Hero userData={userData.Teacher} />
               ) : userData?.role == "GURU" ? (

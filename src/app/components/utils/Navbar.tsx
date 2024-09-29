@@ -126,9 +126,9 @@ export default function Navbar() {
                     </li>
                     <li>
                       <Link
-                        href="/partner"
+                        href="/checklist"
                         className={`${
-                          pathName === "/partner"
+                          pathName === "/checklist"
                             ? "text-red-400 border-2 border-highlight"
                             : "text-black"
                         } rounded-md md:hover:bg-transparent hover:text-red-600 hover:border-2 p-2 hover:border-highlight`}
