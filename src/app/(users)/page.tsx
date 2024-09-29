@@ -1,10 +1,17 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { Archivo_Black } from "next/font/google";
+const archivo_black = Archivo_Black({ weight: "400", subsets: ["latin"] });
+
+ 
+
+
+import { signIn, useSession } from "next-auth/react";
 import CheckSquare from "@/app/components/Icons/Check-square";
 import XSquare from "@/app/components/Icons/Xsquare";
 import { useEffect, useState } from "react";
 import Hero from "./_components/Hero/page";
+import gambar1 from "@/../public/img/Gambar.png";
 import { userFullPayload } from "@/utils/relationsip";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -53,7 +60,8 @@ export default function User(props: any) {
 
     fetchUserData();
   }, [session]);
-  const allTaskDetails = userData?.TaskUser?.flatMap(task => task.DetailTask) || [];
+  const allTaskDetails =
+    userData?.TaskUser?.flatMap((task) => task.DetailTask) || [];
   const filteredTask =
     userData?.TaskUser?.flatMap((task) =>
       task.DetailTask?.filter((detail) => detail.Detail)
@@ -84,14 +92,50 @@ export default function User(props: any) {
   return (
     <>
       {status === "unauthenticated" ? (
-        <div className="bg-[#EDE5E5]">
-          <div className="mt-[100px] p-5 max-w m-10 flex flex-row justify-center">
+        <div className="bg-white">
+          <div className="justify-center flex bg-white pt-40 flex-col h-screen xl:flex-row items-center px-4">
+            <div className="max-w-[800px]">
+              <h1
+                className={`text-[64px] text-start ${archivo_black.className} leading-none`}
+              >
+                Moklet <span className="text-red-500">Scholar</span>
+              </h1>
+              <p className="xl:text-[32px] lg:text-[30px] md:text-[28px] sm:text-[26px] text-[24px] font-normal my-2">
+                Find Your Skill, For Your Future!
+              </p>
+              <FormButton
+                onClick={() => signIn()}
+                className="mt-[17px] scale-125 ml-4"
+                variant="base"
+              >
+                Get Started Now!
+              </FormButton>
+            </div>
+            <div className="mt-12">
+              <Image
+                src={gambar1}
+                width={500}
+                height={500}
+                alt="Orang Sukses Amin"
+              />
+            </div>
+          </div>
+          <div className="mt-[100px] p-5 bg-[#E7E7E7] flex flex-row justify-center">
             <div className="lg:w-1/2 w-full">
-              <h1 className="font-bold text-3xl">SKL</h1>
-              <p className="mt-0 mb-5 font-extralight">
+              <h1 className={`font-bold text-3xl ${archivo_black.className}`}>SKL</h1>
+              <p className={`mt-0 mb-5 font-light`}>
                 Syarat Ketentuan Lulus
               </p>
-              <p className="lg:font-medium font-normal lg:text-base text-sm">
+              <p className="lg:font-medium font-normal indent-14 lg:text-base text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem
+                ipsum, dolor sit amet consectetur adipisicing elit. At, maiores.
+                Facere animi numquam ad itaque, sint excepturi sequi. Quo vitae
+                veniam vero eaque. Recusandae optio totam quas dolorem soluta
+                repellendus. Eius, molestias quae? Soluta veniam, fugiat
+                suscipit cum cupiditate obcaecati. Ut dignissimos vitae quidem
+                reprehenderit voluptate asperiores cum quam ex iure aperiam.
+              </p>
+              <p className="lg:font-medium font-normal lg:text-base indent-14 m-5 text-sm">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem
                 ipsum, dolor sit amet consectetur adipisicing elit. At, maiores.
                 Facere animi numquam ad itaque, sint excepturi sequi. Quo vitae
@@ -107,20 +151,10 @@ export default function User(props: any) {
                 alt="banner"
                 className="lg:w-2/4 w-full h-fit"
               />
-              <FormButton
-                variant="base"
-                type="button"
-                className="hover:bg-moklet hover:text-white m-3"
-                onClick={() => {
-                  router.push("/signin");
-                }}
-              >
-                Get Started
-              </FormButton>
             </div>
           </div>
-          <div className="p-5 w-full flex flex-col flex-wrap justify-center h-[30rem] bg-highlight-2  overflow-auto">
-            <h1 className="font-bold text-xl m-10 text-white">
+          <div className="p-2 lg:p-10 flex flex-col flex-wrap justify-center h-1/4 bg-highlight-2  overflow-auto">
+            <h1 className="font-bold text-xl text-white">
               Guru Yang Terdaftar
             </h1>
             <div className="flex flex-row">
@@ -128,7 +162,7 @@ export default function User(props: any) {
                 ListTeacher.map((user: userFullPayload, i: React.Key) => (
                   <>
                     <div
-                      className=" flex items-center bg-white p-3 rounded-lg m-10 w-[12rem] h-[3rem] md:w-[20rem] md:h-[8rem]"
+                      className=" flex items-center bg-white p-3 rounded-lg m-3 w-fit h-1/2 md:w-[20rem] md:h-[8rem]"
                       key={i}
                     >
                       <Image
@@ -149,6 +183,10 @@ export default function User(props: any) {
               )}
             </div>
           </div>
+          <div className="justify-center flex bg-white pt-40 flex-col h-screen xl:flex-row items-center px-4">
+            <div className="max-w-[800px]">
+            </div>
+          </div>
         </div>
       ) : (
         <div className="mt-[100px] p-5 max-w m-10 flex justify-center flex-col">
@@ -166,14 +204,18 @@ export default function User(props: any) {
                   <h1 className="m-3">
                     {" "}
                     Terverifikasi oleh guru pengajar :{" "}
-                    <span className="font-bold text-xl">{verif ? verif : 0}%</span>
+                    <span className="font-bold text-xl">
+                      {verif ? verif : 0}%
+                    </span>
                   </h1>
                 </div>
                 <div className="flex items-center">
                   <XSquare />
                   <h1 className="m-3">
                     Belum Terverifikasi oleh guru pengajar :{" "}
-                    <span className="font-bold text-xl">{dontVerif? dontVerif: 0}%</span>
+                    <span className="font-bold text-xl">
+                      {dontVerif ? dontVerif : 0}%
+                    </span>
                   </h1>
                 </div>
               </div>

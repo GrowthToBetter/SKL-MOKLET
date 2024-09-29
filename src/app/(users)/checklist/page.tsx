@@ -15,6 +15,8 @@ import { RequestStatus, Role } from "@prisma/client";
 import { FormButton } from "@/app/components/utils/Button";
 import ListTask from "../../(admin)/admin/components/ListTask/page";
 import { Result } from "postcss";
+import { Archivo_Black } from "next/font/google";
+const archivo_black = Archivo_Black({ weight: "400", subsets: ["latin"] });
 import { connect } from "http2";
 
 export default function Checklist() {
@@ -110,19 +112,16 @@ export default function Checklist() {
                       <thead className="text-xs text-gray-900 uppercase dark:text-gray-400">
                         <tr>
                           <th scope="col" className="px-6 py-3">
-                            Task Name
-                          </th>
-                          <th scope="col" className="px-6 py-3">
                             Task Type
                           </th>
                           <th scope="col" className="px-6 py-3">
                             Task Detail
                           </th>
                           <th scope="col" className="px-6 py-3">
-                            Student Name
+                            Teacher Name
                           </th>
                           <th scope="col" className="px-6 py-3">
-                            Student Class
+                            Teacher Subject
                           </th>
                           <th scope="col" className="px-6 py-3">
                             Validate Siswa
@@ -132,36 +131,29 @@ export default function Checklist() {
                           </th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className="p-10">
                         {task.DetailTask.map((detail, index) => (
                           <tr
                             key={detail.id}
-                            className="bg-white dark:bg-gray-800"
+                            className="bg-white border-double border-2 p-5 border-moklet"
                           >
                             {index === 0 && (
                               <th
                                 scope="row"
-                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                className={`px-6 py-4 font-medium ${archivo_black.className} whitespace-nowrap dark:text-gray-800`}
                                 rowSpan={task.DetailTask.length}
                               >
                                 {task.Task}
                               </th>
                             )}
                             <td className="px-6 py-4">{detail.Detail}</td>
-                            <td className="px-6 py-4">{userData.name}</td>
+                            <td className="px-6 py-4">{userData.Teacher?.name}</td>
                             <td className="px-6 py-4">
-                              {userData.clasess &&
-                              userData.title &&
-                              userData.ClassNumber
-                                ? `${userData.clasess}${userData.title}${userData.ClassNumber}`
+                              {userData.Teacher?.clasess &&
+                              userData.Teacher.title
+                                ? `${userData.Teacher.clasess}${userData.Teacher.title}`
                                 : "None"}
                             </td>
-                            <input
-                              type="text"
-                              name="detailId"
-                              className="invisible"
-                              defaultValue={detail.id}
-                            />
                             <td className="px-6 py-4">
                               <input
                                 type="checkbox"
@@ -177,9 +169,17 @@ export default function Checklist() {
                                 defaultChecked={detail.teacherAuth}
                               />
                             </td>
-                            <FormButton type="submit" className="p-5" variant="white">
+                            <td className="px-6 py-4">
+                            <input
+                              type="text"
+                              name="detailId"
+                              className="invisible"
+                              defaultValue={detail.id}
+                            />
+                            <FormButton type="submit" className="p-5" variant="base">
                               Submit
                             </FormButton>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -254,12 +254,7 @@ export default function Checklist() {
                                 </p>
                               ))}
                             </td>
-                            <input
-                              type="text"
-                              name="detailId"
-                              className="invisible"
-                              defaultValue={detail.id}
-                            />
+                            
                             <td className="px-6 py-4">
                               <input
                                 type="checkbox"
@@ -275,9 +270,17 @@ export default function Checklist() {
                                 defaultChecked={detail.teacherAuth}
                               />
                             </td>
+                            <td className="px-6 py-4">
+                            <input
+                              type="text"
+                              name="detailId"
+                              className="invisible"
+                              defaultValue={detail.id}
+                            />
                             <FormButton type="submit" className="p-5" variant="white">
                               Submit
                             </FormButton>
+                            </td>
                           </tr>
                         ))}
                       </tbody>

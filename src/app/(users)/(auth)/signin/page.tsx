@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
+import GambarLogin from "@/../public/img/logoLogin.jpg";
 import { fetcher } from "@/utils/server-action/Fetcher";
 import { userFullPayload, userWithLastLogin } from "@/utils/relationsip";
 import { updateRole } from "@/utils/server-action/userGetServerSession";
@@ -51,14 +52,14 @@ export default function Signin() {
     <React.Fragment>
       <main className="min-h-screen-minus-10">
         <div className="flex max-w-full w-full h-screen items-center justify-center relative">
-          <div className="w-1/2 hidden lg:inline-block relative">
-            {/* img */}
+          <div className="w-1/2 hidden lg:inline-block relative pt-10">
+          <Image src={GambarLogin} alt="gambar login" className="object-cover max-h-screen w-full -z-10" />
           </div>
           <div className="lg:w-1/2 w-full h-screen pt-24 px-4 lg:px-0">
             {/* logo */}
             <div className="max-w-lg mx-auto mt-2">
               <h3 className="text-[35.4px] font-medium text-black leading-none">Welcome to SKL Moklet</h3>
-              <p className="text-[20px] font-medium text-black opacity-70 lg:-mt-2">Find and build your team here</p>
+              <p className="text-[20px] font-medium text-black opacity-70 lg:-mt-2">Find Your Skill, For Your Future! </p>
 
               {loading ? (
                 <button className="focus:outline-none text-white bg-base flex justify-center items-center hover:bg-red-600 focus:ring focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 mt-6 w-full">
