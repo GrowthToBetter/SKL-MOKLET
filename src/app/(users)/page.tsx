@@ -3,8 +3,6 @@
 import { Archivo_Black } from "next/font/google";
 const archivo_black = Archivo_Black({ weight: "400", subsets: ["latin"] });
 
- 
-
 
 import { signIn, useSession } from "next-auth/react";
 import CheckSquare from "@/app/components/Icons/Check-square";
@@ -20,6 +18,7 @@ import banner from "@/../public/img/imageHome1.png";
 import { FormButton } from "../components/utils/Button";
 import { fetcher } from "@/utils/server-action/Fetcher";
 import useSWR from "swr";
+import Footer from "../components/utils/Footer";
 
 export default function User(props: any) {
   const { data: session, status } = useSession();
@@ -90,7 +89,7 @@ export default function User(props: any) {
   }
   if (status === "loading") return "Loading...";
   return (
-    <>
+    <div>
       {status === "unauthenticated" ? (
         <div className="bg-white">
           <div className="justify-center flex bg-white pt-40 flex-col h-screen xl:flex-row items-center px-4">
@@ -187,6 +186,7 @@ export default function User(props: any) {
             <div className="max-w-[800px]">
             </div>
           </div>
+            <Footer variants="red"/>
         </div>
       ) : (
         <div className="mt-[100px] p-5 max-w m-10 flex justify-center flex-col">
@@ -239,6 +239,6 @@ export default function User(props: any) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

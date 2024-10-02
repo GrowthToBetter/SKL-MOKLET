@@ -18,12 +18,15 @@ import { Result } from "postcss";
 import { Archivo_Black } from "next/font/google";
 const archivo_black = Archivo_Black({ weight: "400", subsets: ["latin"] });
 import { connect } from "http2";
+import ModalProfile from "@/app/components/utils/Modal";
 
 export default function Checklist() {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<userFullPayload | null>(null);
-
+  const [modal, setModal] = useState(false);
+  const [taskToLoop, setTaskToLoop] = useState<string | null>(null);
   const router = useRouter();
+  const[detailId, setDetailId]=useState<string>("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -44,20 +47,30 @@ export default function Checklist() {
 
     fetchUserData();
   }, [session]);
-
+  const ListTaskToDefined: (string | null)[] = [];
+  userData?.TaskTeacher.forEach((task) => {
+    if (!ListTaskToDefined.includes(task.Task)) {
+      ListTaskToDefined.push(task.Task);
+    }
+  });
+  const handleClick = (task: string | null) => {
+    setModal(true);
+    setTaskToLoop(task);
+  };
+  const TaskTeacher = userData?.TaskTeacher.find(
+    (task) => task.Task === taskToLoop
+  );
   const handleSubmit = async (e: FormEvent<HTMLFormElement>, id: string) => {
     e.preventDefault();
     try {
       const formData = new FormData(e.target as HTMLFormElement);
       const userAuthTask = formData.get("userAuthTask") === "on";
       const teacherAuth = formData.get("teacherAuth") === "on";
-      const detailId = formData.get("detailId") as string;
-      const task =
+      let task =
         userData?.role === "SISWA"
           ? userData?.TaskUser.find((task) => task.id === id)
           : userData?.TaskTeacher.find((task) => task.id === id);
-      const detail = task?.DetailTask.find((detail) => detail.id === detailId);
-
+      let detail = task?.DetailTask.find((detail) => detail.id === detailId);
       if (!detail) {
         toast.error("Detail not found");
         return;
@@ -87,7 +100,6 @@ export default function Checklist() {
       }
       if (updateResult) {
         toast.success("Task updated successfully!", { id: toastID });
-        console.log(updateResult);
       } else {
         toast.error("Failed to update task", { id: toastID });
       }
@@ -97,6 +109,12 @@ export default function Checklist() {
       console.error(error);
     }
   };
+  const filteredTasks = userData?.TaskTeacher.filter(
+    (task) => task.Task === taskToLoop
+  );
+  const handleForm=(detail: string)=>{
+    setDetailId(detail)
+  }
   if (status === "unauthenticated") return router.push("/signin");
   if (status === "loading") return "Loading...";
   return (
@@ -147,7 +165,9 @@ export default function Checklist() {
                               </th>
                             )}
                             <td className="px-6 py-4">{detail.Detail}</td>
-                            <td className="px-6 py-4">{userData.Teacher?.name}</td>
+                            <td className="px-6 py-4">
+                              {userData.Teacher?.name}
+                            </td>
                             <td className="px-6 py-4">
                               {userData.Teacher?.clasess &&
                               userData.Teacher.title
@@ -170,15 +190,20 @@ export default function Checklist() {
                               />
                             </td>
                             <td className="px-6 py-4">
-                            <input
-                              type="text"
-                              name="detailId"
-                              className="invisible"
-                              defaultValue={detail.id}
-                            />
-                            <FormButton type="submit" className="p-5" variant="base">
-                              Submit
-                            </FormButton>
+                              <input
+                                type="text"
+                                name="detailId"
+                                className="invisible"
+                                defaultValue={detail.id}
+                              />
+                              <FormButton
+                                type="submit"
+                                className="p-5"
+                                variant="base"
+                                onClick={()=>{handleForm(detail.id)} }
+                              >
+                                Submit
+                              </FormButton>
                             </td>
                           </tr>
                         ))}
@@ -191,106 +216,145 @@ export default function Checklist() {
           </div>
         ))
       ) : userData?.role === "GURU" ? (
-        userData?.TaskTeacher.map((task) => (
-          <div key={task.id}>
-            <form onSubmit={(e) => handleSubmit(e, task.id)} key={task.id}>
-              <div className="flex items-center m-5 justify-between p-3 bg-white drop-shadow rounded-[12px]">
-                <div className="flex justify-between w-full">
-                  <div className="relative overflow-x-auto">
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                      <thead className="text-xs text-gray-900 uppercase dark:text-gray-400">
-                        <tr>
-                          <th scope="col" className="px-6 py-3">
-                            Task Type
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Task Detail
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Student Name
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Student Class
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Validate Siswa
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Validate Teacher
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {task.DetailTask.map((detail, index) => (
-                          <tr
-                            key={detail.id}
-                            className="bg-white dark:bg-gray-800"
-                          >
-                            {index === 0 && (
-                              <th
-                                scope="row"
-                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                                rowSpan={task.DetailTask.length}
-                              >
-                                {task.Task}
-                              </th>
-                            )}
-                            <td className="px-6 py-4">{detail.Detail}</td>
-                            <td className="px-6 py-4">
-                              {
-                                userData.Student.find(
-                                  (student) => student.id === task.userId
-                                )?.name
-                              }
-                            </td>
-                            <td className="px-6 py-4">
-                              {userData.Student.map((student) => (
-                                <p key={student.id}>
-                                  {student.clasess &&
-                                  student.title &&
-                                  student.ClassNumber
-                                    ? `${student.clasess}${student.title}${student.ClassNumber}`
-                                    : ""}
-                                </p>
-                              ))}
-                            </td>
-                            
-                            <td className="px-6 py-4">
-                              <input
-                                type="checkbox"
-                                disabled
-                                name="userAuthTask"
-                                defaultChecked={detail.userAuthTask}
-                              />
-                            </td>
-                            <td className="px-6 py-4">
-                              <input
-                                type="checkbox"
-                                name="teacherAuth"
-                                defaultChecked={detail.teacherAuth}
-                              />
-                            </td>
-                            <td className="px-6 py-4">
-                            <input
-                              type="text"
-                              name="detailId"
-                              className="invisible"
-                              defaultValue={detail.id}
-                            />
-                            <FormButton type="submit" className="p-5" variant="white">
-                              Submit
-                            </FormButton>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+        <>
+          {ListTaskToDefined.map((task, i) => (
+            <div key={i} className="flex justify-center">
+              <ul className="max-w-md space-y-1 text-gray-500 list-inside dark:text-gray-400">
+                <li className="flex items-center">
+                  <FormButton
+                    type="button"
+                    onClick={() => handleClick(task)}
+                    className="w-screen"
+                    variant="base"
+                  >
+                    <svg
+                      className="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 flex-shrink-0"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                    </svg>
+                    {task}
+                  </FormButton>
+                </li>
+              </ul>
+            </div>
+          ))}
+          {modal && (
+            <ModalProfile
+              onClose={() => {
+                setModal(false);
+              }}
+            >
+              {filteredTasks ? (
+                filteredTasks.map((task) => (
+                  <div key={task.id}>
+                    <form
+                      onSubmit={(e) => handleSubmit(e, task.id)}
+                      key={task.id}
+                    >
+                      <div className="flex items-center m-5 justify-between p-3 bg-white drop-shadow rounded-[12px]">
+                        <div className="flex justify-between w-full">
+                          <div className="relative overflow-x-auto">
+                            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                              <thead className="text-xs text-gray-900 uppercase dark:text-gray-400">
+                                <tr>
+                                  <th scope="col" className="px-6 py-3">
+                                    Task Detail
+                                  </th>
+                                  <th scope="col" className="px-6 py-3">
+                                    Student Name
+                                  </th>
+                                  <th scope="col" className="px-6 py-3">
+                                    Student Class
+                                  </th>
+                                  <th scope="col" className="px-6 py-3">
+                                    Validate Siswa
+                                  </th>
+                                  <th scope="col" className="px-6 py-3">
+                                    Validate Teacher
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {task.DetailTask.map((detail, index) => (
+                                  <tr
+                                    key={detail.id}
+                                    className="bg-white dark:bg-gray-800"
+                                  >
+                                    <td className="px-6 py-4">
+                                      {detail.Detail}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                      {
+                                        userData.Student.find(
+                                          (student) =>
+                                            student.id === task.userId
+                                        )?.name
+                                      }
+                                    </td>
+                                    <td className="px-6 py-4">
+                                      {userData.Student.map((student) => (
+                                        <p key={student.id}>
+                                          {student.clasess &&
+                                          student.title &&
+                                          student.ClassNumber
+                                            ? `${student.clasess}${student.title}${student.ClassNumber}`
+                                            : ""}
+                                        </p>
+                                      ))}
+                                    </td>
+
+                                    <td className="px-6 py-4">
+                                      <input
+                                        type="checkbox"
+                                        disabled
+                                        name="userAuthTask"
+                                        defaultChecked={detail.userAuthTask}
+                                      />
+                                    </td>
+                                    <td className="px-6 py-4">
+                                      <input
+                                        type="checkbox"
+                                        name="teacherAuth"
+                                        disabled={detail.userAuthTask ? false:true}
+                                        defaultChecked={detail.teacherAuth}
+                                      />
+                                    </td>
+                                    <td className="px-6 py-4">
+                                      <input
+                                        type="text"
+                                        name="detailId"
+                                        className="invisible"
+                                        defaultValue={detail.id}
+                                      />
+                                      <FormButton
+                                        type="submit"
+                                        className="p-5"
+                                        variant="white"
+                                        onClick={() => handleForm(detail.id)}
+                                      >
+                                        Submit
+                                      </FormButton>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
                   </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        ))
+                ))
+              ) : (
+                <></>
+              )}
+            </ModalProfile>
+          )}
+        </>
       ) : (
         <p>No tasks available</p>
       )}

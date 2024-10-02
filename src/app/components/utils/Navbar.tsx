@@ -5,6 +5,9 @@ import { FormButton, LinkButton } from "./Button";
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Logo from "@/../../public/img/logo skl smk telkom (jpg)-03.jpg";
+import { Archivo_Black } from "next/font/google";
+const archivo_black = Archivo_Black({ weight: "400", subsets: ["latin"] });
 
 export default function Navbar() {
   const [modal, setModal] = useState<boolean>(false);
@@ -25,8 +28,24 @@ export default function Navbar() {
     <main>
       <nav className="bg-moklet fixed w-full z-20 top-0 start-0 border-b border-gray-200">
         <div className="w-screen flex flex-wrap items-center justify-between mx-auto p-4 lg:px-20">
-        <div className="w-fit h-fit flex justify-center items-center space-x-72">
-            <h1 className="text-white space-x-10">SKL MOKLET</h1>
+          <div className="w-fit h-fit flex-col justify-center items-center space-x-72">
+            <Link
+              href="#"
+              className=" rtl:space-x-reverse flex justify-center items-center"
+            >
+              <div className="flex">
+              <Image
+                src={Logo}
+                alt="Moklet Competency"
+                className="rounded-md md:visible invisible"
+                width={75}
+              />
+              <div className="bg-white p-1 md:p-5 flex flex-col justify-center items-center rounded-md">
+                <h1 className={`${archivo_black.className} text-center text-[10px] md:text-base text-highlight`}>MoCo</h1>
+                <p className="font-normal text-center text-[10px] md:text-base text-highlight">Moklet Competency</p>
+              </div>
+              </div>
+            </Link>
           </div>
           <Link
             href="#"
@@ -76,7 +95,9 @@ export default function Navbar() {
                             variant="base"
                             className="w-full"
                           >
-                            <p className="mx-auto text-sm">Sign Out</p>
+                            <p className="mx-auto text-sm text-white border-t-2 border-highlight">
+                              Sign Out
+                            </p>
                           </FormButton>
                         </div>
                       )}
@@ -118,8 +139,10 @@ export default function Navbar() {
                       <Link
                         href="/"
                         className={`${
-                          pathName === "/" ? "text-red-400 border-2 border-highlight" : "text-black"
-                        } rounded-md md:bg-transparent hover:text-red-600 hover:border-2 p-2 hover:border-highlight`}
+                          pathName === "/"
+                            ? "text-red-400 border-2 border-highlight"
+                            : "text-black"
+                        } rounded-md hover:text-red-600 hover:border-2 p-2 hover:border-highlight`}
                       >
                         Home
                       </Link>
@@ -131,7 +154,7 @@ export default function Navbar() {
                           pathName === "/checklist"
                             ? "text-red-400 border-2 border-highlight"
                             : "text-black"
-                        } rounded-md md:hover:bg-transparent hover:text-red-600 hover:border-2 p-2 hover:border-highlight`}
+                        } rounded-md hover:text-red-600 hover:border-2 p-2 hover:border-highlight`}
                       >
                         Checklist
                       </Link>
@@ -143,7 +166,7 @@ export default function Navbar() {
                           pathName === "/pengembang"
                             ? "text-red-400 border-2 border-highlight"
                             : "text-black"
-                        } rounded-md md:hover:bg-transparent hover:text-red-600 hover:border-2 p-2 hover:border-highlight`}
+                        } rounded-md hover:text-red-600 hover:border-2 p-2 `}
                       >
                         Developers
                       </Link>
@@ -164,8 +187,10 @@ export default function Navbar() {
                 <Link
                   href="/"
                   className={`${
-                    pathName === "/" ? "text-highlight border-2 border-highlight" : "text-white"
-                  } rounded-md md:bg-transparent hover:text-highlight duration-500 hover:border-2 p-2 hover:border-highlight`}
+                    pathName === "/"
+                      ? "text-highlight border-2 bg-white border-highlight"
+                      : "text-white"
+                  } rounded-md  hover:text-highlight  hover:bg-white duration-200 hover:border-2 p-2 `}
                 >
                   Home
                 </Link>
@@ -174,8 +199,10 @@ export default function Navbar() {
                 <Link
                   href="/checklist"
                   className={`${
-                    pathName === "/checklist" ? "text-highlight border-2 border-highlight" : "text-white"
-                  } rounded-md md:hover:bg-transparent hover:text-highlight duration-500 hover:border-2 p-2 hover:border-highlight`}
+                    pathName === "/checklist"
+                      ? "text-highlight border-2 bg-white border-highlight"
+                      : "text-white"
+                  } rounded-md hover:text-highlight hover:bg-white duration-200 hover:border-2 p-2 `}
                 >
                   Checklist
                 </Link>
@@ -184,8 +211,10 @@ export default function Navbar() {
                 <Link
                   href="/pengembang"
                   className={`${
-                    pathName === "/pengembang" ? "text-highlight border-2 border-highlight" : "text-white"
-                  } rounded-md md:hover:bg-transparent hover:text-highlight duration-500 hover:border-2 p-2 hover:border-highlight`}
+                    pathName === "/pengembang"
+                      ? "text-highlight border-2 bg-white border-highlight"
+                      : "text-white"
+                  } rounded-md hover:text-highlight hover:bg-white duration-200 hover:border-2 p-2 `}
                 >
                   Developers
                 </Link>

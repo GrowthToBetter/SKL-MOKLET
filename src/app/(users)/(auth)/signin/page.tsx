@@ -6,6 +6,7 @@ import { signIn, useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 import GambarLogin from "@/../public/img/logoLogin.jpg";
+import Logo from "@/../public/img/logo skl smk telkom (jpg)-02.jpg";
 import { fetcher } from "@/utils/server-action/Fetcher";
 import { userFullPayload, userWithLastLogin } from "@/utils/relationsip";
 import { updateRole } from "@/utils/server-action/userGetServerSession";
@@ -56,10 +57,10 @@ export default function Signin() {
           <Image src={GambarLogin} alt="gambar login" className="object-cover max-h-screen w-full -z-10" />
           </div>
           <div className="lg:w-1/2 w-full h-screen pt-24 px-4 lg:px-0">
-            {/* logo */}
+          <Image width={370} src={Logo} alt="Logo" className="mx-auto mt-6 border-2 border-moklet rounded-md mb-16" />
             <div className="max-w-lg mx-auto mt-2">
-              <h3 className="text-[35.4px] font-medium text-black leading-none">Welcome to SKL Moklet</h3>
-              <p className="text-[20px] font-medium text-black opacity-70 lg:-mt-2">Find Your Skill, For Your Future! </p>
+              <h3 className="text-[35.4px] font-medium text-center text-black leading-none">Welcome to MoCo</h3>
+              <p className="text-[20px] font-medium text-black text-center opacity-70 lg:-mt-2">Moklet Competency</p>
 
               {loading ? (
                 <button className="focus:outline-none text-white bg-base flex justify-center items-center hover:bg-red-600 focus:ring focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 mt-6 w-full">
