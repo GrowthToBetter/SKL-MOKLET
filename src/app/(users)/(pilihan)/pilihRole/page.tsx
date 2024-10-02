@@ -1,26 +1,21 @@
 "use client";
+
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import Image from "next/image";
 import { FormButton } from "@/app/components/utils/Button";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   updateIdentity,
-  updateRole,
-  UpdateTaskUserAuth,
   updateTeacherOnUser,
-  UpdateUserById,
+  UpdateTaskUserAuth,
   updateUserDetailTask,
 } from "@/utils/server-action/userGetServerSession";
-import { Class, Role, Title, User } from "@prisma/client";
+import { Class, Title } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { occupation } from "@/app/types/occupation";
 import toast from "react-hot-toast";
 import { DropDown } from "@/app/components/utils/Form";
-import { userFullPayload } from "@/utils/relationsip";
+import { TaskFullPayload, userFullPayload } from "@/utils/relationsip";
 import useSWR from "swr";
 import { fetcher } from "@/utils/server-action/Fetcher";
-import { createTaskUser, UpdateTaskUser } from "@/utils/user.query";
 
 export default function PilihKeahlian() {
   const { data: session, status } = useSession();
@@ -30,10 +25,9 @@ export default function PilihKeahlian() {
   const [selectedSpecialist, setSelectedSpecialist] = useState<{
     [key: string]: string;
   }>({});
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userData, setUserData] = useState<userFullPayload | null>(null);
 
-  const { data, error } = useSWR(`/api/teacher`, fetcher, {
+  const { data, error } = useSWR("/api/teacher", fetcher, {
     refreshInterval: 1000,
   });
   const router = useRouter();
@@ -73,6 +67,7 @@ export default function PilihKeahlian() {
       [userId]: newSpecialist,
     }));
   };
+
   const updateTaskWithDetails = async (taskId: string, details: string[]) => {
     try {
       for (const detail of details) {
@@ -100,29 +95,32 @@ export default function PilihKeahlian() {
         await updateIdentity(userData.id, formData);
         const { user } = data;
         const titleUser = formData.get("Specialist");
-        const classUSer = formData.get("Class");
-        let TaskName: any = [];
-        let DetailTask: any = [];
+        const classUser = formData.get("Class");
         const filteredAllTeacher = user.filter(
           (user: userFullPayload) =>
             user.role === "GURU" &&
             user.title == titleUser &&
-            user.clasess == classUSer
+            user.clasess == classUser
         );
         for (const teacher of filteredAllTeacher) {
           await updateTeacherOnUser(userData.id, teacher.id);
-          for (const Task of teacher.TaskTeacher) {
-            if (!TaskName.includes(Task.Task)) {
-              TaskName.push(Task.Task);
-              for (const detail of Task.DetailTask) {
-                DetailTask.push(detail.Detail);
-              }
+          const filteredTasks: TaskFullPayload[] = [];
+          for (const task of teacher.TaskTeacher) {
+            if (!filteredTasks.includes(task)) {
+              filteredTasks.push(task);
             }
           }
-          for (const Task of TaskName) {
+          const filteredTasksName: string[] = [];
+          for (const task of teacher.TaskTeacher) {
+            if (!filteredTasksName.includes(task.Task)) {
+              filteredTasksName.push(task.Task);
+            }
+          }
+          console.log(filteredTasksName);
+          for (const Task of filteredTasksName) {
             const formData = new FormData();
-            formData.set("Task", Task);
-            formData.set("classes", classUSer as string);
+            formData.set("Task", Task as string);
+            formData.set("classes", classUser as string);
             formData.set("title", titleUser as string);
             let taskTeacherData = {
               connect: [{ id: teacher.id }],
@@ -135,7 +133,14 @@ export default function PilihKeahlian() {
               taskTeacherData,
               userConnection
             );
-            await updateTaskWithDetails(result.task.id, DetailTask);
+            const taskDetails=filteredTasks.find((task)=>task.Task===Task);
+            const taskDetailsList:string[] =[];
+            taskDetails?.DetailTask.map((detail)=>{
+              taskDetailsList.push(detail.Detail as string);
+            })
+            console.log(taskDetailsList)
+            await updateTaskWithDetails(result.task.id, taskDetailsList);
+            
           }
         }
         router.push("/profile");
@@ -146,6 +151,7 @@ export default function PilihKeahlian() {
       throw new Error((error as Error).message);
     }
   };
+
   return (
     <React.Fragment>
       <main className="flex max-w-full w-full h-screen items-center justify-center">
@@ -173,9 +179,9 @@ export default function PilihKeahlian() {
                       value: classes,
                     }))}
                     className="rounded-xl flex justify-center items-center bg-moklet text-black p-3 m-3 font-bold"
-                    name={`classes`}
+                    name="classes"
                     value={
-                      selectedClass[userData?.id || 0] ||
+                      selectedClass[userData?.id || ""] ||
                       userData?.clasess ||
                       undefined
                     }
@@ -190,9 +196,9 @@ export default function PilihKeahlian() {
                       value: special,
                     }))}
                     className="rounded-xl flex justify-center items-center bg-moklet text-black p-3 m-3 font-bold"
-                    name={`specialist`}
+                    name="specialist"
                     value={
-                      selectedSpecialist[userData?.id || 0] ||
+                      selectedSpecialist[userData?.id || ""] ||
                       userData?.title ||
                       undefined
                     }

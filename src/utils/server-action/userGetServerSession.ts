@@ -83,7 +83,7 @@ export const UpdateUserById = async (data: FormData) => {
           BirthDate: BirthDate ?? findUserWithId?.BirthDate,
           gender: gender ?? findUserWithId?.gender,
           role: role ?? findUserWithId?.role,
-          title: title?? findUserWithId?.title,
+          title: title ?? findUserWithId?.title,
           status: status ?? findUserWithId?.status,
           photo_profile: photo_profile ?? findUserWithId?.photo_profile,
           religion: religion ?? findUserWithId?.religion,
@@ -119,27 +119,34 @@ export const UpdateTaskUserAuth = async (
       classes,
       title,
     });
-    if (create.id) {
-      const createDetail = await createDetailUser({
-        Detail,
-        idTask: create.id,
-        status:"PENDING",
-        teacherAuth:false,
-        userAuthTask:false
-      });
+    if (Detail) {
+      if (create.id) {
+        const createDetail = await createDetailUser({
+          Detail,
+          idTask: create.id,
+          status: "PENDING",
+          teacherAuth: false,
+          userAuthTask: false,
+        });
+        revalidatePath("/checklist");
+        revalidatePath("/api/data");
+        revalidatePath("/api/teacher");
+        revalidatePath("/api/user");
+        return { task: create, detail: createDetail };
+      } else {
+        throw new Error("Failed to create task");
+      }
+    } else {
       revalidatePath("/checklist");
       revalidatePath("/api/data");
       revalidatePath("/api/teacher");
       revalidatePath("/api/user");
-      return { task: create, detail: createDetail };
-    } else {
-      throw new Error("Failed to create task");
+      return { task: create };
     }
   } catch (error) {
     throw new Error((error as Error).message);
   }
 };
-
 
 export const updateIdentity = async (id: string, data: FormData) => {
   try {
@@ -173,15 +180,18 @@ export const updateIdentity = async (id: string, data: FormData) => {
   }
 };
 
-export const updateUserDetailTask=async(Detail:string,  TaskConnect: { connect: { id: string } })=>{
-  const idTask=TaskConnect.connect.id;
+export const updateUserDetailTask = async (
+  Detail: string,
+  TaskConnect: { connect: { id: string } }
+) => {
+  const idTask = TaskConnect.connect.id;
   try {
     const create = await createDetailUser({
       Detail,
       idTask,
-      status:"PENDING",
-      teacherAuth:false,
-      userAuthTask:false
+      status: "PENDING",
+      teacherAuth: false,
+      userAuthTask: false,
     });
     revalidatePath("/checklist");
     revalidatePath("/api/data");
@@ -193,8 +203,7 @@ export const updateUserDetailTask=async(Detail:string,  TaskConnect: { connect: 
   }
 };
 
-
-export const updateTeacherOnUser = async (id: string, teacherId:string) => {
+export const updateTeacherOnUser = async (id: string, teacherId: string) => {
   try {
     const session = await nextGetServerSession();
     if (!session) {
@@ -203,11 +212,11 @@ export const updateTeacherOnUser = async (id: string, teacherId:string) => {
     const update = await prisma.user.update({
       where: { id: id },
       data: {
-        Teacher:{
-          connect:{
-            id:teacherId
-          }
-        }
+        Teacher: {
+          connect: {
+            id: teacherId,
+          },
+        },
       },
     });
     if (!update) {
@@ -283,7 +292,6 @@ export const UpdateTaskUser = async (
   }
 };
 
-
 export const UpdateTaskTeacher = async (
   status: RequestStatus,
   detailId: string,
@@ -316,7 +324,6 @@ export const UpdateTaskTeacher = async (
   }
 };
 
-
 export const UpdateGeneralProfileById = async (data: FormData) => {
   try {
     const session = await nextGetServerSession();
@@ -330,7 +337,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
     const clasess = data.get("clasess") as Class;
     const absent = data.get("absent") as string;
     const Phone = data.get("Phone") as string;
-    const ClassNumber= data.get("classDetail") as string;
+    const ClassNumber = data.get("classDetail") as string;
     const NIS = data.get("NIS") as string;
     const NISN = data.get("NISN") as string;
     const schoolOrigin = data.get("schoolOrigin") as string;
@@ -370,7 +377,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
           name: name ?? findUserWithId?.name,
           absent: absent ?? findUserWithId?.absent,
           clasess: clasess ?? findUserWithId?.clasess,
-          ClassNumber: ClassNumber??findUserWithId?.ClassNumber,
+          ClassNumber: ClassNumber ?? findUserWithId?.ClassNumber,
           NIS: NIS ?? findUserWithId?.NIS,
           NISN: NISN ?? findUserWithId?.NISN,
           schoolOrigin: schoolOrigin ?? findUserWithId?.schoolOrigin,
