@@ -1,6 +1,6 @@
 import { Task, Prisma, RequestStatus } from "@prisma/client";
 import prisma from "./../lib/prisma";
-
+import { updateRole } from "./server-action/userGetServerSession";
 
 export const findAllUsers = async (filter?: Prisma.UserWhereInput) => {
   return await prisma.user.findMany({
