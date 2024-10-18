@@ -137,7 +137,7 @@ export default function Profile() {
             <ul className="space-y-2">
               {session?.user?.role=="SISWA" ? 
                 <List userData={userData?.Teacher} />
-              : session?.user?.role=="GURU" ? <List userData={userData?.classTeacher} />:""}
+              : ''}
             </ul>
           </div>
 
